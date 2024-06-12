@@ -1,88 +1,99 @@
 {
-  "name": "jeopardy",
-  "version": "0.0.0",
-  "description": "Jeopardy-style game",
-  "homepage": "https://github.com/jhobz/jeopardy",
-  "author": {
-    "name": "Jeff Hobson",
-    "email": "jeffrey296@gmail.com",
-    "url": "https://github.com/jhobz"
-  },
-  "files": [
-    "dashboard",
-    "graphics",
-    "extension.js",
-    "extension"
-  ],
-  "keywords": [
-    "",
-    "nodecg-bundle"
-  ],
-  "nodecg": {
-    "compatibleRange": "^2.0.0",
-    "graphics": [
-      {
-        "file": "board.html",
-        "width": 1920,
-        "height": 1080,
-        "singleInstance": false
-      }
+    "name": "jeopardy",
+    "version": "0.0.0",
+    "description": "Jeopardy-style game",
+    "homepage": "https://github.com/jhobz/jeopardy",
+    "author": {
+        "name": "Jeff Hobson",
+        "email": "jeffrey296@gmail.com",
+        "url": "https://github.com/jhobz"
+    },
+    "files": [
+        "dashboard",
+        "graphics",
+        "extension.js",
+        "extension"
     ],
-    "dashboardPanels": [
-      {
-        "name": "jeopardy",
-        "title": "Jeopardy",
-        "width": 6,
-        "file": "jeopardy.html",
-        "headerColor": "#525F78"
-      }
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
+    "keywords": [
+        "",
+        "nodecg-bundle"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "scripts": {
-    "build": "node scripts/build.mjs --all",
-    "build:extension": "node scripts/build.mjs --extension",
-    "watch": "node scripts/build.mjs --all --watch",
-    "watch:browser": "node scripts/build.mjs --dashboard --graphics --watch",
-    "watch:schemas": "node scripts/build.mjs --schemas --watch",
-    "dev": "concurrently --kill-others \"npm run watch:schemas\" \"npm run watch:browser\" \"nodemon\"",
-    "generate-schema-types": "trash src/types/schemas && nodecg schema-types"
-  },
-  "dependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "react": "*",
-    "react-dom": "*",
-    "ts-node": "*"
-  },
-  "devDependencies": {
-    "@nodecg/types": "^2.0.0",
-    "@parcel/config-default": "*",
-    "@parcel/core": "*",
-    "@parcel/reporter-cli": "*",
-    "@parcel/validator-typescript": "*",
-    "@types/node": "^18",
-    "concurrently": "*",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "glob": "^10.2.7",
-    "nodemon": "*",
-    "prettier": "^3.3.2",
-    "trash-cli": "*",
-    "typescript": "^5.1.3"
-  },
-  "repository": "https://github.com/jhobz/jeopardy.git",
-  "license": "MIT"
+    "nodecg": {
+        "assetCategories": [
+            {
+                "name": "game-data",
+                "title": "Game Data File",
+                "allowedTypes": [
+                    "json"
+                ]
+            }
+        ],
+        "compatibleRange": "^2.0.0",
+        "graphics": [
+            {
+                "file": "board.html",
+                "width": 1920,
+                "height": 1080,
+                "singleInstance": false
+            }
+        ],
+        "dashboardPanels": [
+            {
+                "name": "jeopardy",
+                "title": "Jeopardy",
+                "width": 6,
+                "file": "jeopardy.html",
+                "headerColor": "#525F78"
+            }
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.5%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "scripts": {
+        "build": "node scripts/build.mjs --all",
+        "build:extension": "node scripts/build.mjs --extension",
+        "watch": "node scripts/build.mjs --all --watch",
+        "watch:browser": "node scripts/build.mjs --dashboard --graphics --watch",
+        "watch:schemas": "node scripts/build.mjs --schemas --watch",
+        "dev": "concurrently --kill-others \"npm run watch:schemas\" \"npm run watch:browser\" \"nodemon\"",
+        "generate-schema-types": "trash src/types/schemas && nodecg schema-types"
+    },
+    "dependencies": {
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "react": "*",
+        "react-dom": "*",
+        "styled-components": "^6.1.11",
+        "ts-node": "*"
+    },
+    "devDependencies": {
+        "@nodecg/types": "^2.0.0",
+        "@parcel/config-default": "*",
+        "@parcel/core": "*",
+        "@parcel/reporter-cli": "*",
+        "@parcel/validator-typescript": "*",
+        "@types/node": "^18",
+        "concurrently": "*",
+        "eslint": "^8.57.0",
+        "eslint-plugin-react": "^7.34.2",
+        "eslint-plugin-react-hooks": "^4.6.2",
+        "glob": "^10.2.7",
+        "nodemon": "*",
+        "prettier": "^3.3.2",
+        "trash-cli": "*",
+        "typescript": "^5.1.3"
+    },
+    "proxy": "http://localhost:9090",
+    "repository": "https://github.com/jhobz/jeopardy.git",
+    "license": "MIT"
 }

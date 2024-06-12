@@ -1,21 +1,32 @@
-import type NodeCG from '@nodecg/types';
-import type { ExampleReplicant } from '../types/schemas';
+import type NodeCG from '@nodecg/types'
+import { GameDataParser } from './GameDataParser'
+import { JArchiveParser } from './JArchiveParser'
+import { GameData } from '../types/schemas'
+
+let logger: NodeCG.Logger
 
 module.exports = function (nodecg: NodeCG.ServerAPI) {
-	nodecg.log.info("Hello, from your bundle's extension!");
-	nodecg.log.info("I'm where you put all your server-side code.");
-	nodecg.log.info(
-		`To edit me, open "${__filename.replace(
-			'build/extension',
-			'src/extension',
-		)}" in your favorite text editor or IDE.`,
-	);
-	nodecg.log.info('You can use any libraries, frameworks, and tools you want. There are no limits.');
-	nodecg.log.info('Visit https://nodecg.dev for full documentation.');
-	nodecg.log.info('Good luck!');
+    logger = nodecg.log
 
-	const exampleReplicant = nodecg.Replicant('exampleReplicant') as unknown as NodeCG.ServerReplicantWithSchemaDefault<ExampleReplicant>;
-	setInterval(() => {
-		exampleReplicant.value.age++;
-	}, 5000);
-};
+    const gameDataRep = nodecg.Replicant<GameData>('gameData', {
+        defaultValue: {
+            categories: [],
+            clues: [],
+        },
+    })
+    const gameDataFileRep =
+        nodecg.Replicant<NodeCG.AssetFile[]>('assets:game-data')
+    let gameDataParser: GameDataParser
+
+    gameDataFileRep.on('change', async (fileRep) => {
+        if (!fileRep || !fileRep.length) {
+            logger.warn('No Game Data File found in assets group.')
+            return
+        }
+
+        // TODO: Check for file type
+        gameDataParser = new JArchiveParser()
+
+        gameDataRep.value = await gameDataParser.parse(fileRep[0])
+    })
+}
