@@ -1,27 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react'
+import { useReplicant } from '@nodecg/react-hooks'
+import { GameData } from '../types/schemas'
 
 export function Jeopardy() {
-	return (
-		<>
-			<p>Hello, I'm one of the panels in your bundle! I'm where you put your controls.</p>
+    const [gameDataRep] = useReplicant<GameData>('gameData')
 
-			<p>
-				To edit me, open "<span className="monospace">src/dashboard/Jeopardy.tsx</span>" in your favorite text
-				editor or IDE.
-			</p>
+    useEffect(() => {
+        console.log(gameDataRep?.clues)
+        console.log(gameDataRep?.categories)
+    }, [gameDataRep])
 
-			<p>
-				You can use any libraries, frameworks, and tools you want. The only limit of panels is that they cannot
-				render outside of their
-				<span className="monospace">&lt;iframe&gt;</span>'s bounding box.
-			</p>
-
-			<p>
-				Visit <a href="https://nodecg.dev" target="_blank" rel="noopener">https://nodecg.dev</a> for full
-				documentation.
-			</p>
-
-			<p>You've got this!</p>
-		</>
-	)
+    return <></>
 }

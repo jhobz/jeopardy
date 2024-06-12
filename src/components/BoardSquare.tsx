@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const BoardSquareElement = styled.div`
+const BoardSquareElement = styled.p`
     --tile-color: blue;
-    display: grid;
-    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     padding: 2em;
     background-color: var(--tile-color);
 `
@@ -15,5 +17,5 @@ type BoardSquareProps = {
 }
 
 export const BoardSquare: React.FC<BoardSquareProps> = ({ type, content }) => {
-    return <div>{content}</div>
+    return <BoardSquareElement>{content}</BoardSquareElement>
 }
