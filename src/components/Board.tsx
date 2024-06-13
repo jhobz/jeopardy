@@ -3,19 +3,18 @@ import styled from 'styled-components'
 import { GameData } from '../types/schemas'
 import { BoardSquare } from './BoardSquare'
 import { useReplicant } from '@nodecg/react-hooks'
+import { BoardState } from '../types/board-types'
 
-type BoardState = Array<Array<0 | 1 | 2>>
-
-const SquareGrid = styled.div`
+const SquareGrid = styled.div<{ width: number; height: number }>`
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(6, 1fr);
-    row-gap: 10px;
-    column-gap: 5px;
+    row-gap: 0.5em;
+    column-gap: 0.5em;
     justify-items: stretch;
     align-items: stretch;
-    width: 1920px;
-    height: 1080px;
+    width: ${(props) => props.width + 'px'};
+    height: ${(props) => props.height + 'px'};
     background-color: black;
     color: white;
 `
@@ -28,9 +27,16 @@ const SquareGroup = styled.div`
 type BoardProps = {
     data: GameData
     boardReplicantName: string
+    width?: number
+    height?: number
 }
 
-export const Board: React.FC<BoardProps> = ({ data, boardReplicantName }) => {
+export const Board: React.FC<BoardProps> = ({
+    data,
+    boardReplicantName,
+    width = 1920,
+    height = 1080,
+}) => {
     const [boardStateRep, setBoardStateRep] =
         useReplicant<BoardState>(boardReplicantName)
     const [boardState, setBoardState] = useState<BoardState>(
@@ -94,7 +100,7 @@ export const Board: React.FC<BoardProps> = ({ data, boardReplicantName }) => {
     })
 
     return (
-        <SquareGrid>
+        <SquareGrid width={width} height={height}>
             {...categorySquares}
             {...clueSquares}
         </SquareGrid>

@@ -1,19 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<style>
-			body {
-				font-family: sans-serif;
-			}
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-			.monospace {
-				font-family: monospace;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="./jeopardy-bootstrap.tsx"></script>
-	</body>
+            html,
+            body,
+            p {
+                margin: 0;
+            }
+
+            body {
+                font-family: sans-serif;
+                font-size: 9px;
+            }
+
+            .monospace {
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="./Jeopardy.tsx"></script>
+    </body>
 </html>

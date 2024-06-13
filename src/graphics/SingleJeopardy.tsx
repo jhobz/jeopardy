@@ -4,7 +4,15 @@ import { Board } from '../components/Board'
 import { useReplicant } from '@nodecg/react-hooks'
 import { GameData } from '../types/schemas'
 
-export const SingleJeopardy: React.FC = () => {
+type SingleJeopardyProps = {
+    width?: number
+    height?: number
+}
+
+export const SingleJeopardy: React.FC<SingleJeopardyProps> = ({
+    width = 1920,
+    height = 1080,
+}) => {
     const [gameDataRep] = useReplicant<GameData>('gameData')
     const [boardData, setBoardData] = useState<GameData>({
         categories: [],
@@ -31,9 +39,11 @@ export const SingleJeopardy: React.FC = () => {
         <Board
             data={boardData}
             boardReplicantName="singleJeopardyBoardState"
+            width={width}
+            height={height}
         ></Board>
     )
 }
 
-const root = createRoot(document.getElementById('root')!)
-root.render(<SingleJeopardy />)
+// const root = createRoot(document.getElementById('root')!)
+// root.render(<SingleJeopardy />)

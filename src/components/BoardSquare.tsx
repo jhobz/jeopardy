@@ -7,7 +7,7 @@ const BoardSquareElement = styled.p<{ hidden: boolean }>`
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    padding: 2em;
+    padding: 1em;
     background-color: var(--tile-color);
     width: 100%;
 `
