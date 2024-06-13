@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Board } from '../components/Board'
 import { useReplicant } from '@nodecg/react-hooks'
@@ -10,7 +10,6 @@ export const SingleJeopardy: React.FC = () => {
         categories: [],
         clues: [],
     })
-    const [boardState, setBoardState] = useState()
 
     useEffect(() => {
         if (!gameDataRep) {
@@ -28,7 +27,12 @@ export const SingleJeopardy: React.FC = () => {
         })
     }, [gameDataRep])
 
-    return <Board data={boardData}></Board>
+    return (
+        <Board
+            data={boardData}
+            boardReplicantName="singleJeopardyBoardState"
+        ></Board>
+    )
 }
 
 const root = createRoot(document.getElementById('root')!)

@@ -1,6 +1,5 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://example.com/schemas/game_data_replicant",
     "title": "Game Data",
     "description": "All game data for the initial board state(s).",
 
