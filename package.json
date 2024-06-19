@@ -44,6 +44,13 @@
                 "width": 6,
                 "file": "jeopardy.html",
                 "headerColor": "#525F78"
+            },
+            {
+                "name": "player-setup",
+                "title": "Player Controls",
+                "width": 3,
+                "file": "playersetup.html",
+                "headerColor": "#525F78"
             }
         ]
     },

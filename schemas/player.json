@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Player",
+    "description": "Player object.",
+
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer", "minimum": 0 },
+        "name": { "type": "string" },
+        "points": { "type": "integer", "default": 0 }
+    },
+    "additionalProperties": false,
+    "required": ["id", "name"]
+}

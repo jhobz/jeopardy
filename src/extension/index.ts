@@ -1,7 +1,7 @@
 import type NodeCG from '@nodecg/types'
 import { GameDataParser } from './GameDataParser'
 import { JArchiveParser } from './JArchiveParser'
-import { GameData } from '../types/schemas'
+import { GameData, Player } from '../types/schemas'
 
 let logger: NodeCG.Logger
 
@@ -20,7 +20,9 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
     gameDataFileRep.on('change', async (fileRep) => {
         if (!fileRep || !fileRep.length) {
-            logger.warn('No Game Data File found in assets group.')
+            logger.warn(
+                'No Game Data File found in assets group. (This may be initial load.)'
+            )
             return
         }
 
@@ -28,5 +30,9 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         gameDataParser = new JArchiveParser()
 
         gameDataRep.value = await gameDataParser.parse(fileRep[0])
+    })
+
+    const playersRep = nodecg.Replicant<Player[]>('players', {
+        defaultValue: [],
     })
 }
