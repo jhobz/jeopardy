@@ -45,5 +45,5 @@ export const SingleJeopardy: React.FC<SingleJeopardyProps> = ({
     )
 }
 
-// const root = createRoot(document.getElementById('root')!)
-// root.render(<SingleJeopardy />)
+const root = createRoot(document.getElementById('root')!)
+root.render(<SingleJeopardy />)

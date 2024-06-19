@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
+
+:root {
+    --board-font: 'Dosis', sans-serif;
+    --board-value-font: 'gdqpixel', sans-serif;
+    --tile-color: #5b0ebc;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Dosis', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.monospace {
+    font-family: monospace;
+}
+
+/* RESET STYLES */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
