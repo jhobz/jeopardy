@@ -16,5 +16,6 @@
             "type": "string",
             "enum": ["intro", "board", "question"]
         }
-    }
+    },
+    "additionalProperties": false
 }

@@ -14,5 +14,4 @@ export interface GameState {
 	currentQuestion?: string;
 	currentAnswer?: string;
 	boardDisplayMode?: 'intro' | 'board' | 'question';
-	[k: string]: unknown;
 }
