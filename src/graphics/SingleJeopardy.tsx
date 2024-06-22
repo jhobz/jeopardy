@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import { Board } from '../components/Board'
 import { useReplicant } from '@nodecg/react-hooks'
 import { GameData } from '../types/schemas'
@@ -44,6 +43,3 @@ export const SingleJeopardy: React.FC<SingleJeopardyProps> = ({
         ></Board>
     )
 }
-
-const root = createRoot(document.getElementById('root')!)
-root.render(<SingleJeopardy />)

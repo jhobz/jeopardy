@@ -2,6 +2,7 @@ import type NodeCG from '@nodecg/types'
 import { GameDataParser } from './GameDataParser'
 import { JArchiveParser } from './JArchiveParser'
 import { GameData, GameState, Player } from '../types/schemas'
+import { BoardState } from '../types/board-types'
 
 let logger: NodeCG.Logger
 let hasDoneInitialLoad = false
@@ -43,4 +44,37 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     const gameStateRep = nodecg.Replicant<GameState>('gameState', {
         defaultValue: {},
     })
+
+    const boardStatesRep = nodecg.Replicant<Record<string, BoardState>>(
+        'boardStates',
+        {
+            defaultValue: {
+                singleJeopardyBoardState: new Array(5).fill(
+                    new Array<number>(6).fill(0)
+                ),
+            },
+        }
+    )
+
+    nodecg.listenFor('coverClicked', (data) => {
+        const boardCopy = deepCopy(boardStatesRep.value[data.boardName])
+        boardCopy[data.row][data.col] = boardCopy[data.row][data.col] + 1
+
+        boardStatesRep.value = {
+            ...boardStatesRep.value,
+            [data.boardName]: boardCopy,
+        }
+
+        nodecg.sendMessage('showQuestion', data)
+    })
+}
+
+const deepCopy = (arr: Array<Array<number>>) => {
+    const clone = new Array(arr.length)
+
+    for (let i = 0; i < arr.length; i++) {
+        clone[i] = arr[i].slice()
+    }
+
+    return clone
 }
