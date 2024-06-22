@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Game State",
+    "description": "Global game state for the game.",
+
+    "type": "object",
+    "properties": {
+        "answerControls": { "type": "number", "enum": [0, 1] },
+        "currentRound": {
+            "type": "string",
+            "enum": ["single", "double", "final"]
+        },
+        "currentQuestion": { "type": "string" },
+        "currentAnswer": { "type": "string" },
+        "boardDisplayMode": {
+            "type": "string",
+            "enum": ["intro", "board", "question"]
+        }
+    },
+    "additionalProperties": false
+}

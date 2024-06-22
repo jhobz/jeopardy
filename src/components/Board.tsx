@@ -7,8 +7,8 @@ import { BoardState } from '../types/board-types'
 
 const SquareGrid = styled.div<{ width: number; height: number }>`
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: repeat(6, minmax(0, 1fr));
     row-gap: 0.5em;
     column-gap: 0.5em;
     justify-items: stretch;
