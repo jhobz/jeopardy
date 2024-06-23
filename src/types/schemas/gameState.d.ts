@@ -10,8 +10,14 @@
  */
 export interface GameState {
 	answerControls?: 0 | 1;
+	currentClue?: {
+		question: string;
+		answer: string;
+		row: number;
+		column: number;
+		value: number;
+		[k: string]: unknown;
+	};
 	currentRound?: 'single' | 'double' | 'final';
-	currentQuestion?: string;
-	currentAnswer?: string;
 	boardDisplayMode?: 'intro' | 'board' | 'question';
 }

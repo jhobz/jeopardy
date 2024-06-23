@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useReplicant } from '@nodecg/react-hooks'
-import { GameData, Player } from '../types/schemas'
-import { BoardState } from '../types/board-types'
-import { SingleJeopardy } from '../graphics/SingleJeopardy'
+import { Player } from '../types/schemas'
 import styled from 'styled-components'
 
 const PlayerAttribute = styled.div`

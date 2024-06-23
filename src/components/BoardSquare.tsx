@@ -34,32 +34,46 @@ type BoardSquareProps = {
     content: string
     hidden?: boolean
     onClick?: (e: React.MouseEvent) => void
+    className?: string
 }
 
-export const BoardSquare: React.FC<BoardSquareProps> = ({
-    type,
-    content,
-    hidden,
-    onClick,
-}) => {
+export const BoardSquare = React.forwardRef<
+    HTMLParagraphElement,
+    BoardSquareProps
+>(({ type, content, hidden, onClick, className }, ref) => {
     switch (type) {
         case 'category':
             return (
-                <BoardSquareTitleElement onClick={onClick} hidden={!!hidden}>
+                <BoardSquareTitleElement
+                    className={className}
+                    onClick={onClick}
+                    hidden={!!hidden}
+                    ref={ref}
+                >
                     {content}
                 </BoardSquareTitleElement>
             )
         case 'clue':
             return (
-                <BoardSquareElement onClick={onClick} hidden={!!hidden}>
+                <BoardSquareElement
+                    className={className}
+                    onClick={onClick}
+                    hidden={!!hidden}
+                    ref={ref}
+                >
                     {content}
                 </BoardSquareElement>
             )
         case 'value':
             return (
-                <BoardSquareCoverElement onClick={onClick} hidden={!!hidden}>
+                <BoardSquareCoverElement
+                    className={className}
+                    onClick={onClick}
+                    hidden={!!hidden}
+                    ref={ref}
+                >
                     {content}
                 </BoardSquareCoverElement>
             )
     }
-}
+})
