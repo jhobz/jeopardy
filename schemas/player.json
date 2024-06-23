@@ -9,6 +9,7 @@
         "name": { "type": "string" },
         "points": { "type": "integer", "default": 0 },
         "controller": { "type": "integer", "default": 0 },
+        "nameplateImage": { "type": "string" },
         "finalJeopardyBid": { "type": "integer", "default": 0 }
     },
     "additionalProperties": false,
