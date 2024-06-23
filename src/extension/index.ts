@@ -43,4 +43,22 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     const gameStateRep = nodecg.Replicant<GameState>('gameState', {
         defaultValue: {},
     })
+
+    const activeBuzzerRep = nodecg.Replicant<number| null>('activeBuzzer', { 
+        defaultValue: null,
+    });
+
+    nodecg.listenFor('buzzerPressed', ({ index }) => {
+        console.log('Buzzer pressed: ', index);
+
+        if (activeBuzzerRep.value === null) {
+            activeBuzzerRep.value = index;
+        }
+    });
+
+    nodecg.listenFor('buzzerReset', () => {
+        console.log('Buzzer reset');
+        
+        activeBuzzerRep.value = null;
+    })
 }
