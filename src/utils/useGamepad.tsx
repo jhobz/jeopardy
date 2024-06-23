@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 type GamepadInfo = { connected: false } | {
   connected: true;
+  id: string;
   buttonA: boolean;
   buttonB: boolean;
   buttonX: boolean;
@@ -19,6 +20,7 @@ export const useGamepad = () => {
 
       return {
         connected: true,
+        id: gamepad.id,
         buttonA: gamepad.buttons[0].pressed,
         buttonB: gamepad.buttons[1].pressed,
         buttonX: gamepad.buttons[2].pressed,

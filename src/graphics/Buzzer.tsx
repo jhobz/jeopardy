@@ -1,15 +1,16 @@
+import { useReplicant } from '@nodecg/react-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Player } from '../types/schemas';
 import { useGamepad } from '../utils/useGamepad';
 
 export const Buzzer: React.FC = () => {
   const gamepads = useGamepad();
-   
-  console.log('gamepad', gamepads); 
+  const [playersRep] = useReplicant<Player[]>('players')
   
   const aPresses = gamepads.map(pad => pad.connected ? pad.buttonA : false);
 
-  console.log(aPresses);
+  console.log('a presses -', aPresses);
   useEffect(() => {
     aPresses.forEach((value, index) => {
       if (value) nodecg.sendMessage('buzzerPressed', { index });
@@ -18,7 +19,9 @@ export const Buzzer: React.FC = () => {
   
   return (
     <div>
-      Buzzer system :V
+      {gamepads.map((gamepad, index) => (
+        gamepad.connected && (<div key={index}>Controller {index + 1} ({gamepad.id}) - {playersRep?.[index]?.name ?? 'No player'}</div>)
+      ))}
     </div>
   )
 }
