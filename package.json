@@ -35,6 +35,12 @@
                 "width": 1920,
                 "height": 1080,
                 "singleInstance": false
+            },
+            {
+                "file": "buzzer.html",
+                "width": 1920,
+                "height": 1080,
+                "singleInstance": false
             }
         ],
         "dashboardPanels": [
@@ -51,7 +57,15 @@
                 "width": 3,
                 "file": "playersetup.html",
                 "headerColor": "#525F78"
+            },
+            {
+                "name": "buzzer-controls",
+                "title": "Buzzer Controls",
+                "width": 2,
+                "file": "buzzerControls.html",
+                "headerColor": "#525F78"
             }
+            
         ]
     },
     "browserslist": {

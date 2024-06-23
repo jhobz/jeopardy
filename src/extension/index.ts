@@ -124,6 +124,24 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
     )
 
+    const activeBuzzerRep = nodecg.Replicant<number | null>('activeBuzzer', {
+        defaultValue: null,
+    })
+
+    nodecg.listenFor('buzzerPressed', ({ index }) => {
+        console.log('Buzzer pressed: ', index)
+
+        if (activeBuzzerRep.value === null) {
+            activeBuzzerRep.value = index
+        }
+    })
+
+    nodecg.listenFor('buzzerReset', () => {
+        console.log('Buzzer reset')
+
+        activeBuzzerRep.value = null
+    })
+
     const clearQuestion = (boardName: string) => {
         if (!gameStateRep.value.currentClue) {
             return

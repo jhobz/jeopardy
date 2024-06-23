@@ -47,9 +47,10 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({
     const [id, setId] = useState<number>(player.id)
     const [name, setName] = useState<string>(player.name)
     const [points, setPoints] = useState<number>(player.points || 0)
+    const [controller, setController] = useState<number>(player.controller || 0)
 
     const save = () => {
-        saveChanges({ id, name, points })
+        saveChanges({ id, name, points, controller })
     }
 
     // Override local state if the props ever change
@@ -83,6 +84,17 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({
                     value={points}
                     onChange={(e) => {
                         setPoints(parseInt(e.target.value))
+                    }}
+                    onBlur={save}
+                />
+            </PlayerAttribute>
+            <PlayerAttribute>
+                <label>controller</label>
+                <input
+                    type="number"
+                    value={controller}
+                    onChange={(e) => {
+                        setController(parseInt(e.target.value))
                     }}
                     onBlur={save}
                 />
