@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { createRef, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { GameData } from '../types/schemas'
+import { GameData, GameState } from '../types/schemas'
 import { BoardSquare } from './BoardSquare'
-import { useReplicant } from '@nodecg/react-hooks'
+import { useListenFor, useReplicant } from '@nodecg/react-hooks'
 import { BoardState } from '../types/board-types'
 
 const SquareGrid = styled.div<{ width: number; height: number }>`
+    position: relative;
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: repeat(6, minmax(0, 1fr));
@@ -17,11 +18,19 @@ const SquareGrid = styled.div<{ width: number; height: number }>`
     height: ${(props) => props.height + 'px'};
     background-color: black;
     color: white;
+    overflow: hidden;
 `
 
-const SquareGroup = styled.div`
+const SquareGroup = styled.div<{
+    $row: number
+    $column: number
+}>`
     display: flex;
     position: relative;
+    grid-row: ${(props) => props.$row};
+    grid-column: ${(props) => props.$column};
+    background-color: var(--tile-color);
+    /* transition: font-size 1s linear; */
 `
 
 type BoardProps = {
@@ -37,25 +46,61 @@ export const Board: React.FC<BoardProps> = ({
     width = 1920,
     height = 1080,
 }) => {
-    const [boardStateRep, setBoardStateRep] =
-        useReplicant<BoardState>(boardReplicantName)
-    const [boardState, setBoardState] = useState<BoardState>(
-        new Array(5).fill(new Array<number>(6).fill(0))
-    )
+    const [gameStateRep, setGameStateRep] = useReplicant<GameState>('gameState')
+    const gridRef = createRef<HTMLDivElement>()
+    const [currentClueElement, setCurrentClueElement] = useState<HTMLElement>()
+
+    useListenFor<{
+        clue: GameData['clues'][0]
+        row: number
+        col: number
+        ref: React.RefObject<HTMLElement>
+    }>('showQuestion', ({ row, col }) => {
+        console.log('showQuestion')
+
+        const squareElement = gridRef.current?.querySelector(
+            `.square-${col}-${row}`
+        )
+        if (!squareElement || !gridRef.current) {
+            return
+        }
+        const clone = squareElement?.cloneNode(true) as HTMLElement
+        gridRef.current.appendChild(clone)
+        const rect = squareElement.getBoundingClientRect()
+        const gridRect = gridRef.current.getBoundingClientRect()
+        clone.classList.add('featured')
+        clone.style.setProperty('--width', rect.width + 'px')
+        clone.style.setProperty('--height', rect.height + 'px')
+        clone.style.setProperty('--left', rect.left - gridRect.left + 'px')
+        clone.style.setProperty('--top', rect.top - gridRect.top + 'px')
+        clone.style.setProperty(
+            '--xfactor',
+            ((gridRect.width + 1) / rect.width).toString()
+        )
+        clone.style.setProperty(
+            '--yfactor',
+            ((gridRect.height + 1) / rect.height).toString()
+        )
+        clone.classList.add('animate')
+        setCurrentClueElement(clone)
+    })
 
     useEffect(() => {
-        if (!boardStateRep) {
+        if (!gameStateRep) {
             return
         }
 
-        setBoardState(boardStateRep)
-    }, [boardStateRep])
+        if (gameStateRep.boardDisplayMode === 'board' && currentClueElement) {
+            currentClueElement.remove()
+            setCurrentClueElement(undefined)
+        }
+    }, [gameStateRep])
 
     const categories = [...data.categories]
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map((category) => category.name)
 
-    // Sort by value and then category in order to get everything in the right order
+    // Sort by value and then category in order to get everything in the right* order
     const clues = [...data.clues].sort(
         (a, b) =>
             a.value - b.value ||
@@ -65,54 +110,74 @@ export const Board: React.FC<BoardProps> = ({
                 data.categories.find((cat) => cat.name === b.category)?.index
     )
 
-    const categorySquares = categories.map((category) => {
-        return <BoardSquare content={category} type="category" key={category} />
-    })
-
-    const clueSquares = clues.map((clue, index) => {
-        const row = index % 5
-        const col = Math.floor(index / 5)
-        const state = boardState[row][col]
-
-        const onCoverClick = (e: React.MouseEvent) => {
-            const newState = deepCopy(boardState)
-            newState[row][col] = state + 1
-            setBoardStateRep(newState)
-        }
-
+    const categorySquares = categories.map((category, index) => {
         return (
-            <SquareGroup>
+            <SquareGroup $row={1} $column={index + 1}>
                 <BoardSquare
-                    content={clue.value.toString()}
-                    type="value"
-                    hidden={state > 0 ? true : false}
-                    onClick={onCoverClick}
-                    key={clue.category + clue.value + 'cover'}
-                ></BoardSquare>
-                <BoardSquare
-                    content={clue.question}
-                    type="clue"
-                    hidden={state > 1 ? true : false}
-                    key={clue.category + clue.value}
+                    content={category}
+                    type="category"
+                    key={category}
                 />
             </SquareGroup>
         )
     })
 
+    const clueSquares = clues.map((clue, index) => (
+        <SquareGrouping
+            key={index}
+            clue={clue}
+            index={index}
+            boardName={boardReplicantName}
+        />
+    ))
+
     return (
-        <SquareGrid width={width} height={height}>
+        <SquareGrid width={width} height={height} ref={gridRef}>
             {...categorySquares}
             {...clueSquares}
         </SquareGrid>
     )
 }
 
-const deepCopy = (arr: Array<Array<number>>) => {
-    const clone = new Array(arr.length)
+interface SquareGroupingProps {
+    clue: GameData['clues'][0]
+    index: number
+    boardName: string
+}
+const SquareGrouping: React.FC<SquareGroupingProps> = ({
+    clue,
+    index,
+    boardName,
+}) => {
+    const [boardStatesRep] =
+        useReplicant<Record<string, BoardState>>('boardStates')
+    const row = Math.floor(index / 6)
+    const col = index % 6
+    const state = boardStatesRep?.[boardName]?.[row]?.[col] ?? 0
 
-    for (let i = 0; i < arr.length; i++) {
-        clone[i] = arr[i].slice()
-    }
+    const onCoverClick = useCallback((e: React.MouseEvent) => {
+        nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
+    }, [])
 
-    return clone
+    return (
+        <SquareGroup
+            // className={state === 1 ? 'featured' : ''}
+            $row={row + 2}
+            $column={col + 1}
+            key={clue.category + clue.value}
+        >
+            <BoardSquare
+                content={clue.value.toString()}
+                type="value"
+                hidden={state > 0 ? true : false}
+                onClick={onCoverClick}
+            ></BoardSquare>
+            <BoardSquare
+                className={`square-${col}-${row}`}
+                content={clue.question}
+                type="clue"
+                hidden={state > 1 ? true : false}
+            />
+        </SquareGroup>
+    )
 }

@@ -6,12 +6,21 @@
     "type": "object",
     "properties": {
         "answerControls": { "type": "number", "enum": [0, 1] },
+        "currentClue": {
+            "type": "object",
+            "properties": {
+                "question": { "type": "string" },
+                "answer": { "type": "string" },
+                "row": { "type": "number" },
+                "column": { "type": "number" },
+                "value": { "type": "number" }
+            },
+            "required": ["question", "answer", "row", "column", "value"]
+        },
         "currentRound": {
             "type": "string",
             "enum": ["single", "double", "final"]
         },
-        "currentQuestion": { "type": "string" },
-        "currentAnswer": { "type": "string" },
         "boardDisplayMode": {
             "type": "string",
             "enum": ["intro", "board", "question"]

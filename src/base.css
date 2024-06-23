@@ -18,6 +18,26 @@ body {
     font-family: monospace;
 }
 
+p.featured {
+    color: white;
+    position: absolute;
+    transition: transform 1s linear;
+    transform-origin: top left;
+    z-index: 99;
+
+    width: var(--width);
+    height: var(--height);
+    left: var(--left);
+    top: var(--top);
+    right: var(--right);
+    bottom: var(--bottom);
+}
+
+p.featured.animate {
+    transform: translate(calc(var(--left) * -1), calc(var(--top) * -1))
+        scaleX(var(--xfactor)) scaleY(var(--yfactor));
+}
+
 /* RESET STYLES */
 
 * {

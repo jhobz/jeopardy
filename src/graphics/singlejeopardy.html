@@ -7,6 +7,13 @@
     </head>
     <body>
         <div id="root"></div>
-        <script type="module" src="./SingleJeopardy.tsx"></script>
+        <!-- <script type="module" src="./SingleJeopardy.tsx"></script> -->
+        <script type="module" lang="tsx" defer>
+            import React from 'react'
+            import { createRoot } from 'react-dom/client'
+            import { SingleJeopardy } from './SingleJeopardy.tsx'
+            const root = createRoot(document.getElementById('root'))
+            root.render(<SingleJeopardy />)
+        </script>
     </body>
 </html>
