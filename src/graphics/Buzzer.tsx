@@ -20,7 +20,7 @@ export const Buzzer: React.FC = () => {
   return (
     <div>
       {gamepads.map((gamepad, index) => (
-        gamepad.connected && (<div key={index}>Controller {index + 1} ({gamepad.id}) - {playersRep?.[index]?.name ?? 'No player'}</div>)
+        gamepad.connected && (<div key={index}>Controller {index + 1} ({gamepad.id}) - {playersRep?.find(x => x.controller === index)?.name ?? 'No player'}</div>)
       ))}
     </div>
   )
