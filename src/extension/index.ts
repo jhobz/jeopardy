@@ -137,9 +137,14 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
 
     nodecg.listenFor('buzzerReset', () => {
-        console.log('Buzzer reset')
+        console.log('Buzzer reset');
+        
+        activeBuzzerRep.value = null;
+    });
 
-        activeBuzzerRep.value = null
+    
+    nodecg.listenFor('updatePlayer', (player) => {        
+        playersRep.value = playersRep.value.map(x => x.id === player.id ? player : x);
     })
 
     const clearQuestion = (boardName: string) => {
