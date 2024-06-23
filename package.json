@@ -64,8 +64,14 @@
                 "width": 2,
                 "file": "buzzerControls.html",
                 "headerColor": "#525F78"
+            },
+            {
+                "name": "final-jeopardy-controls",
+                "title": "Final Jeopardy",
+                "width": 3,
+                "file": "finalJeopardyControls.html",
+                "headerColor": "#525F78"
             }
-            
         ]
     },
     "browserslist": {

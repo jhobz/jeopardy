@@ -60,5 +60,10 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         console.log('Buzzer reset');
         
         activeBuzzerRep.value = null;
+    });
+
+    
+    nodecg.listenFor('updatePlayer', (player) => {        
+        playersRep.value = playersRep.value.map(x => x.id === player.id ? player : x);
     })
 }

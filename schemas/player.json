@@ -8,7 +8,8 @@
         "id": { "type": "integer", "minimum": 0 },
         "name": { "type": "string" },
         "points": { "type": "integer", "default": 0 },
-        "controller": { "type": "integer", "default": 0 }
+        "controller": { "type": "integer", "default": 0 },
+        "finalJeopardyBid": { "type": "integer", "default": 0 }
     },
     "additionalProperties": false,
     "required": ["id", "name"]
