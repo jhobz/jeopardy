@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { useReplicant } from '@nodecg/react-hooks'
 import { Player } from '../types/schemas'
 import styled from 'styled-components'
+import { NodeCG } from '@nodecg/types/types/nodecg'
 
 const PlayerAttribute = styled.div`
     display: flex;
@@ -15,6 +16,11 @@ const PlayerAttribute = styled.div`
 
     & > :last-child {
         flex: 250px 1 1;
+    }
+
+
+    & select {
+        max-width: 200px;
     }
 `
 
@@ -44,13 +50,15 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({
     player,
     saveChanges,
 }) => {
+    const [nameplateOptions] = useReplicant<NodeCG.AssetFile[]>('assets:nameplates');
     const [id, setId] = useState<number>(player.id)
     const [name, setName] = useState<string>(player.name)
     const [points, setPoints] = useState<number>(player.points || 0)
     const [controller, setController] = useState<number>(player.controller || 0)
+    const [nameplate, setNameplate] = useState<string | undefined>(player.nameplateImage);
 
     const save = () => {
-        saveChanges({ id, name, points, controller })
+        saveChanges({ id, name, points, controller, nameplateImage: nameplate })
     }
 
     // Override local state if the props ever change
@@ -98,6 +106,19 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({
                     }}
                     onBlur={save}
                 />
+            </PlayerAttribute>
+            <PlayerAttribute>
+                <label>image</label>
+                <select
+                    value={nameplate}
+                    onChange={e => setNameplate(e.target.value)}
+                    onBlur={save}
+                >
+                    <option value=""></option>
+                    {nameplateOptions?.map(asset => (
+                        <option key={asset.url} value={asset.url}>{asset.base}</option>
+                    ))}
+                </select>
             </PlayerAttribute>
         </PlayerElement>
     )

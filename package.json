@@ -26,6 +26,16 @@
                 "allowedTypes": [
                     "json"
                 ]
+            },
+            {
+                "name": "nameplates",
+                "title": "Player Nameplates",
+                "allowedTypes": [
+                    "jpg",
+                    "jpeg",
+                    "gif",
+                    "png"
+                ]
             }
         ],
         "compatibleRange": "^2.0.0",
@@ -38,6 +48,12 @@
             },
             {
                 "file": "buzzer.html",
+                "width": 1920,
+                "height": 1080,
+                "singleInstance": false
+            },
+            {
+                "file": "nameplate.html",
                 "width": 1920,
                 "height": 1080,
                 "singleInstance": false

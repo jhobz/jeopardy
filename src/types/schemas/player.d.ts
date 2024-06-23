@@ -13,5 +13,6 @@ export interface Player {
 	name: string;
 	points?: number;
 	controller?: number;
+	nameplateImage?: string;
 	finalJeopardyBid?: number;
 }
