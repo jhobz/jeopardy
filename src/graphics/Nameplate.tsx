@@ -7,7 +7,9 @@ import styled from 'styled-components'
 
 export const Nameplate: React.FC = () => {
     const [playersRep] = useReplicant<Player[]>('players')
-    const index = new URLSearchParams(window.location.search).get('index')
+    const params = new URLSearchParams(window.location.search)
+    const index = params.get('index')
+    const spacer = params.get('spacer')
 
     if (!index) return <div>No index query parameter specified.</div>
 
@@ -16,27 +18,38 @@ export const Nameplate: React.FC = () => {
     if (!player) return null
 
     return (
-        <Container>
-            <ScoreDisplay score={player.points || 0}></ScoreDisplay>
+        <Container $spacer={spacer !== '0'}>
+            <ScoreDisplay score={player.points || 0} />
+            {spacer === '0' ? <></> : <Spacer />}
             <Image src={player.nameplateImage} />
+            {spacer === '0' ? <></> : <Spacer />}
         </Container>
     )
 }
 
-const Container = styled.div`
+const Spacer = styled.div`
+    flex-basis: 0;
+    background: linear-gradient(0deg, var(--tile-color), black);
+    flex-grow: 1;
+    justify-self: stretch;
+`
+
+const Container = styled.div<{ $spacer: boolean }>`
     --border-width: 2vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: ${(props) => (props.$spacer ? '100vh' : 'auto')};
     background-color: black;
     gap: var(--border-width);
     border: var(--border-width) solid black;
 `
 
 const Image = styled.img`
-    min-width: 300px;
+    min-width: 200px;
     width: 100%;
-    aspect-ratio: calc(140 / 94);
+    aspect-ratio: calc(200 / 136);
+    overflow: hidden;
 `
 
 const root = createRoot(document.getElementById('root')!)
