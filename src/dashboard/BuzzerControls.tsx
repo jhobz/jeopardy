@@ -15,7 +15,7 @@ export const BuzzerControls = () => {
   return (
     <Container>
       <ActiveLabel>
-        {activeBuzzer === null || activeBuzzer === undefined ? '-' : playersRep?.find(x => x.controller === activeBuzzer)?.name ?? 'No player set'}
+        {activeBuzzer === null || activeBuzzer === undefined ? '-' : playersRep?.find(x => x.controller === activeBuzzer)?.name || 'No player set'}
       </ActiveLabel>
       <ActiveSublabel>{activeBuzzer === null || activeBuzzer === undefined ? '-' : `Controller ${activeBuzzer + 1}`}</ActiveSublabel>
       <ResetButton onClick={handleResetBuzzer}>Clear</ResetButton>
