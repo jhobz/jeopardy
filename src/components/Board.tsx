@@ -29,6 +29,7 @@ const SquareGroup = styled.div<{
     position: relative;
     grid-row: ${(props) => props.$row};
     grid-column: ${(props) => props.$column};
+    background-color: var(--tile-color);
     /* transition: font-size 1s linear; */
 `
 
@@ -47,24 +48,16 @@ export const Board: React.FC<BoardProps> = ({
 }) => {
     const [gameStateRep, setGameStateRep] = useReplicant<GameState>('gameState')
     const gridRef = createRef<HTMLDivElement>()
+    const [currentClueElement, setCurrentClueElement] = useState<HTMLElement>()
 
     useListenFor<{
         clue: GameData['clues'][0]
         row: number
         col: number
         ref: React.RefObject<HTMLElement>
-    }>('showQuestion', ({ clue, ref, row, col }) => {
+    }>('showQuestion', ({ row, col }) => {
         console.log('showQuestion')
-        // const newState: GameState = {
-        //     currentRound: gameStateRep?.currentRound,
-        //     answerControls: 1,
-        //     currentQuestion: clue.question,
-        //     currentAnswer: clue.answer,
-        //     currentElement: ref,
-        //     boardDisplayMode: 'question',
-        // }
 
-        // setGameStateRep(newState)
         const squareElement = gridRef.current?.querySelector(
             `.square-${col}-${row}`
         )
@@ -89,26 +82,19 @@ export const Board: React.FC<BoardProps> = ({
             ((gridRect.height + 1) / rect.height).toString()
         )
         clone.classList.add('animate')
+        setCurrentClueElement(clone)
     })
 
-    // useEffect(() => {
-    //     if (!gameStateRep) {
-    //         return
-    //     }
+    useEffect(() => {
+        if (!gameStateRep) {
+            return
+        }
 
-    //     if (
-    //         gameStateRep.boardDisplayMode === 'question' &&
-    //         gameStateRep.currentClue
-    //     ) {
-    //         // const clue = data.clues.find(
-    //         //     (clue) => clue.question === gameStateRep.currentClue?.question
-    //         // )
-    //         // if (!clue) {
-    //         //     return
-    //         // }
-    //         // showQuestion(clue)
-    //     }
-    // }, [gameStateRep])
+        if (gameStateRep.boardDisplayMode === 'board' && currentClueElement) {
+            currentClueElement.remove()
+            setCurrentClueElement(undefined)
+        }
+    }, [gameStateRep])
 
     const categories = [...data.categories]
         .sort((a, b) => (a.index || 0) - (b.index || 0))
@@ -170,11 +156,6 @@ const SquareGrouping: React.FC<SquareGroupingProps> = ({
     const state = boardStatesRep?.[boardName]?.[row]?.[col] ?? 0
 
     const onCoverClick = useCallback((e: React.MouseEvent) => {
-        // const newState = deepCopy(boardState)
-        // newState[row][col] = state + 1
-        // setBoardStateRep(newState)
-
-        // showQuestion(clue, ref)
         nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
     }, [])
 

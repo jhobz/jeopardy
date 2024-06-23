@@ -56,17 +56,104 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
     )
 
-    nodecg.listenFor('coverClicked', (data) => {
-        const boardCopy = deepCopy(boardStatesRep.value[data.boardName])
-        boardCopy[data.row][data.col] = boardCopy[data.row][data.col] + 1
+    nodecg.listenFor('resetBoard', ({ boardName }: { boardName: string }) => {
+        boardStatesRep.value[boardName] = new Array(5).fill(
+            new Array<number>(6).fill(0)
+        )
+    })
 
-        boardStatesRep.value = {
-            ...boardStatesRep.value,
-            [data.boardName]: boardCopy,
+    nodecg.listenFor(
+        'clearQuestion',
+        ({ boardName }: { boardName: string }) => {
+            clearQuestion(boardName)
+        }
+    )
+
+    nodecg.listenFor('coverClicked', (data) => {
+        advanceBoardState(data.boardName, data.row, data.col)
+
+        gameStateRep.value = {
+            answerControls: 1,
+            currentClue: { ...data.clue, row: data.row, column: data.col },
+            currentRound: gameStateRep.value?.currentRound || 'single',
+            boardDisplayMode: 'question',
         }
 
         nodecg.sendMessage('showQuestion', data)
     })
+
+    nodecg.listenFor(
+        'playerAnswer',
+        ({
+            player: playerId,
+            isCorrect,
+            boardName,
+        }: {
+            player: number
+            isCorrect: boolean
+            boardName: string
+        }) => {
+            if (!gameStateRep.value.currentClue) {
+                logger.error(
+                    'Attempted to give player answer without currentClue in state!'
+                )
+                return
+            }
+
+            const player = playersRep.value.find((p) => p.id === playerId)
+            if (!player) {
+                logger.info(player)
+                logger.error(
+                    'Invalid player ID when attempting to give answer!',
+                    playerId
+                )
+                return
+            }
+
+            if (!player.points) {
+                player.points = 0
+            }
+
+            player.points +=
+                (isCorrect ? 1 : -1) *
+                (gameStateRep.value.currentClue?.value || 0)
+
+            if (isCorrect) {
+                clearQuestion(boardName)
+            }
+        }
+    )
+
+    const clearQuestion = (boardName: string) => {
+        if (!gameStateRep.value.currentClue) {
+            return
+        }
+
+        const row = gameStateRep.value.currentClue.row
+        const col = gameStateRep.value.currentClue.column
+
+        advanceBoardState(boardName, row, col)
+
+        gameStateRep.value = {
+            answerControls: 0,
+            currentClue: undefined,
+            boardDisplayMode: 'board',
+        }
+    }
+
+    const advanceBoardState = (boardName: string, row: number, col: number) => {
+        try {
+            const boardCopy = deepCopy(boardStatesRep.value[boardName])
+            boardCopy[row][col] = boardCopy[row][col] + 1
+
+            boardStatesRep.value = {
+                ...boardStatesRep.value,
+                [boardName]: boardCopy,
+            }
+        } catch (e) {
+            logger.error('COULD NOT ADVANCE BOARD STATE!!', e)
+        }
+    }
 }
 
 const deepCopy = (arr: Array<Array<number>>) => {

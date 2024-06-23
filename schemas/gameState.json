@@ -12,8 +12,10 @@
                 "question": { "type": "string" },
                 "answer": { "type": "string" },
                 "row": { "type": "number" },
-                "column": { "type": "number" }
-            }
+                "column": { "type": "number" },
+                "value": { "type": "number" }
+            },
+            "required": ["question", "answer", "row", "column", "value"]
         },
         "currentRound": {
             "type": "string",
