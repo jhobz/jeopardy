@@ -145,7 +145,6 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     
     nodecg.listenFor('updatePlayer', (player) => {        
         playersRep.value = playersRep.value.map(x => x.id === player.id ? player : x);
-        activeBuzzerRep.value = null
     })
 
     const clearQuestion = (boardName: string) => {
