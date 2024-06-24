@@ -30,23 +30,22 @@ const SquareGroup = styled.div<{
     grid-row: ${(props) => props.$row};
     grid-column: ${(props) => props.$column};
     background-color: var(--tile-color);
-    /* transition: font-size 1s linear; */
 `
 
 type BoardProps = {
     data: GameData
-    boardReplicantName: string
+    round?: 'single' | 'double' | 'final'
     width?: number
     height?: number
 }
 
 export const Board: React.FC<BoardProps> = ({
     data,
-    boardReplicantName,
+    round = 'single',
     width = 1920,
     height = 1080,
 }) => {
-    const [gameStateRep, setGameStateRep] = useReplicant<GameState>('gameState')
+    const [gameStateRep] = useReplicant<GameState>('gameState')
     const gridRef = createRef<HTMLDivElement>()
     const [currentClueElement, setCurrentClueElement] = useState<HTMLElement>()
 
@@ -127,7 +126,7 @@ export const Board: React.FC<BoardProps> = ({
             key={index}
             clue={clue}
             index={index}
-            boardName={boardReplicantName}
+            boardName={round}
         />
     ))
 
@@ -155,13 +154,15 @@ const SquareGrouping: React.FC<SquareGroupingProps> = ({
     const col = index % 6
     const state = boardStatesRep?.[boardName]?.[row]?.[col] ?? 0
 
-    const onCoverClick = useCallback((e: React.MouseEvent) => {
-        nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
-    }, [])
+    const onCoverClick = useCallback(
+        (e: React.MouseEvent) => {
+            nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
+        },
+        [clue, row, col, boardName]
+    )
 
     return (
         <SquareGroup
-            // className={state === 1 ? 'featured' : ''}
             $row={row + 2}
             $column={col + 1}
             key={clue.category + clue.value}
