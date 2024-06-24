@@ -1,24 +1,46 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useReplicant } from '@nodecg/react-hooks'
 import { GameData, GameState, Player } from '../types/schemas'
 import { BoardState } from '../types/board-types'
-import { SingleJeopardy } from '../graphics/SingleJeopardy'
+import { JeopardyBoard } from '../graphics/JeopardyBoard'
 import styled from 'styled-components'
 
-const STATE_BOARD_NAME = 'singleJeopardyBoardState'
+type Round = 'single' | 'double' | 'final'
 
 export function Jeopardy() {
+    const [gameStateRep] = useReplicant<GameState>('gameState')
+
     const resetGame = useCallback(() => {
-        nodecg.sendMessage('resetBoard', {
-            boardName: STATE_BOARD_NAME,
-        })
+        nodecg.sendMessage('resetBoard')
+    }, [])
+
+    const changeRound = useCallback((round: Round) => {
+        nodecg.sendMessage('changeRound', round)
     }, [])
 
     return (
         <>
-            <SingleJeopardy width={800} height={600}></SingleJeopardy>
+            <JeopardyBoard
+                width={800}
+                height={600}
+                round={gameStateRep?.currentRound}
+            />
             <br />
+            <label htmlFor="roundSelector">Round:</label>
+            <select
+                id="roundSelector"
+                onChange={(e) => {
+                    changeRound(e.target.selectedOptions[0].value as Round)
+                }}
+                value={gameStateRep?.currentRound}
+            >
+                <option value="single">First round</option>
+                <option value="double">Second round</option>
+                <option disabled value="final">
+                    Final round
+                </option>
+            </select>
             <button
                 onClick={(e) => {
                     resetGame()
@@ -42,7 +64,7 @@ const QuestionControls = () => {
         }) || []
 
     const clearQuestion = useCallback(() => {
-        nodecg.sendMessage('clearQuestion', { boardName: STATE_BOARD_NAME })
+        nodecg.sendMessage('clearQuestion')
     }, [])
 
     return (
@@ -62,7 +84,6 @@ const PlayerAnswerControl: React.FC<{ player: Player }> = ({ player }) => {
             nodecg.sendMessage('playerAnswer', {
                 player: player.id,
                 isCorrect,
-                boardName: STATE_BOARD_NAME,
             })
         },
         [player]

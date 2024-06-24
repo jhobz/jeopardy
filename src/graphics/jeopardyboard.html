@@ -7,13 +7,12 @@
     </head>
     <body>
         <div id="root"></div>
-        <!-- <script type="module" src="./SingleJeopardy.tsx"></script> -->
         <script type="module" lang="tsx" defer>
             import React from 'react'
             import { createRoot } from 'react-dom/client'
-            import { SingleJeopardy } from './SingleJeopardy.tsx'
+            import { JeopardyBoard } from './JeopardyBoard.tsx'
             const root = createRoot(document.getElementById('root'))
-            root.render(<SingleJeopardy />)
+            root.render(<JeopardyBoard />)
         </script>
     </body>
 </html>

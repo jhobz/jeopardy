@@ -30,19 +30,18 @@ const SquareGroup = styled.div<{
     grid-row: ${(props) => props.$row};
     grid-column: ${(props) => props.$column};
     background-color: var(--tile-color);
-    /* transition: font-size 1s linear; */
 `
 
 type BoardProps = {
     data: GameData
-    boardReplicantName: string
+    round?: 'single' | 'double' | 'final'
     width?: number
     height?: number
 }
 
 export const Board: React.FC<BoardProps> = ({
     data,
-    boardReplicantName,
+    round = 'single',
     width = 1920,
     height = 1080,
 }) => {
@@ -127,7 +126,7 @@ export const Board: React.FC<BoardProps> = ({
             key={index}
             clue={clue}
             index={index}
-            boardName={boardReplicantName}
+            boardName={round}
         />
     ))
 

@@ -3,14 +3,16 @@ import { Board } from '../components/Board'
 import { useReplicant } from '@nodecg/react-hooks'
 import { GameData } from '../types/schemas'
 
-type SingleJeopardyProps = {
+type JeopardyBoardProps = {
     width?: number
     height?: number
+    round?: 'single' | 'double' | 'final'
 }
 
-export const SingleJeopardy: React.FC<SingleJeopardyProps> = ({
+export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
     width = 1920,
     height = 1080,
+    round = 'single',
 }) => {
     const [gameDataRep] = useReplicant<GameData>('gameData')
     const [boardData, setBoardData] = useState<GameData>({
@@ -24,20 +26,20 @@ export const SingleJeopardy: React.FC<SingleJeopardyProps> = ({
         }
 
         const categories = gameDataRep?.categories.filter(
-            (c) => c.round === 'single'
+            (c) => c.round === round
         )
-        const clues = gameDataRep?.clues.filter((c) => c.round === 'single')
+        const clues = gameDataRep?.clues.filter((c) => c.round === round)
 
         setBoardData({
             categories,
             clues,
         })
-    }, [gameDataRep])
+    }, [gameDataRep, round])
 
     return (
         <Board
             data={boardData}
-            boardReplicantName="singleJeopardyBoardState"
+            round={round}
             width={width}
             height={height}
         ></Board>

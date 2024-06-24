@@ -41,7 +41,7 @@
         "compatibleRange": "^2.0.0",
         "graphics": [
             {
-                "file": "singlejeopardy.html",
+                "file": "jeopardyboard.html",
                 "width": 1920,
                 "height": 1080,
                 "singleInstance": false

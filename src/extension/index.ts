@@ -42,40 +42,61 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
 
     const gameStateRep = nodecg.Replicant<GameState>('gameState', {
-        defaultValue: {},
+        defaultValue: {
+            answerControls: 0,
+            currentRound: 'single',
+            boardDisplayMode: 'board',
+        },
     })
 
     const boardStatesRep = nodecg.Replicant<Record<string, BoardState>>(
         'boardStates',
         {
             defaultValue: {
-                singleJeopardyBoardState: new Array(5).fill(
-                    new Array<number>(6).fill(0)
-                ),
+                single: new Array(5).fill(new Array<number>(6).fill(0)),
+                double: new Array(5).fill(new Array<number>(6).fill(0)),
+                final: new Array(1).fill(new Array<number>(1).fill(0)),
             },
         }
     )
 
-    nodecg.listenFor('resetBoard', ({ boardName }: { boardName: string }) => {
-        boardStatesRep.value[boardName] = new Array(5).fill(
-            new Array<number>(6).fill(0)
-        )
+    nodecg.listenFor('resetBoard', () => {
+        logger.info(gameStateRep.value)
+        if (!gameStateRep.value.currentRound) {
+            logger.error('No current round set when trying to reset board!')
+            return
+        }
+
+        boardStatesRep.value[gameStateRep.value.currentRound] = new Array(
+            5
+        ).fill(new Array<number>(6).fill(0))
     })
 
-    nodecg.listenFor(
-        'clearQuestion',
-        ({ boardName }: { boardName: string }) => {
-            clearQuestion(boardName)
+    nodecg.listenFor('changeRound', (round: 'single' | 'double' | 'final') => {
+        if (!round) {
+            logger.error("Tried to change to round that doesn't exist")
+            return
         }
-    )
+
+        gameStateRep.value = {
+            ...gameStateRep.value,
+            currentRound: round,
+        }
+    })
+
+    nodecg.listenFor('clearQuestion', () => {
+        logger.info('clearQuestion', gameStateRep.value.currentRound)
+        clearQuestion()
+    })
 
     nodecg.listenFor('coverClicked', (data) => {
+        logger.info('coverClicked', data.boardName)
         advanceBoardState(data.boardName, data.row, data.col)
 
         gameStateRep.value = {
             answerControls: 1,
             currentClue: { ...data.clue, row: data.row, column: data.col },
-            currentRound: gameStateRep.value?.currentRound || 'single',
+            currentRound: gameStateRep.value?.currentRound,
             boardDisplayMode: 'question',
         }
 
@@ -87,11 +108,9 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         ({
             player: playerId,
             isCorrect,
-            boardName,
         }: {
             player: number
             isCorrect: boolean
-            boardName: string
         }) => {
             if (!gameStateRep.value.currentClue) {
                 logger.error(
@@ -119,7 +138,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
                 (gameStateRep.value.currentClue?.value || 0)
 
             if (isCorrect) {
-                clearQuestion(boardName)
+                clearQuestion()
             }
         }
     )
@@ -137,27 +156,40 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
 
     nodecg.listenFor('buzzerReset', () => {
-        console.log('Buzzer reset');
-        
-        activeBuzzerRep.value = null;
-    });
+        console.log('Buzzer reset')
 
-    
-    nodecg.listenFor('updatePlayer', (player) => {        
-        playersRep.value = playersRep.value.map(x => x.id === player.id ? player : x);
+        activeBuzzerRep.value = null
     })
 
-    const clearQuestion = (boardName: string) => {
-        if (!gameStateRep.value.currentClue) {
+    nodecg.listenFor('updatePlayer', (player) => {
+        playersRep.value = playersRep.value.map((x) =>
+            x.id === player.id ? player : x
+        )
+    })
+
+    const clearQuestion = () => {
+        if (!gameStateRep.value.currentRound) {
+            logger.error('No current round set when trying to clear question!')
             return
         }
+
+        if (!gameStateRep.value.currentClue) {
+            logger.error('No current clue set when trying to clear question!')
+            return
+        }
+        logger.info('board state before advancing')
+        logger.info(boardStatesRep.value[gameStateRep.value.currentRound])
 
         const row = gameStateRep.value.currentClue.row
         const col = gameStateRep.value.currentClue.column
 
-        advanceBoardState(boardName, row, col)
+        advanceBoardState(gameStateRep.value.currentRound, row, col)
+
+        logger.info('board state after advancing')
+        logger.info(boardStatesRep.value[gameStateRep.value.currentRound])
 
         gameStateRep.value = {
+            ...gameStateRep.value,
             answerControls: 0,
             currentClue: undefined,
             boardDisplayMode: 'board',
