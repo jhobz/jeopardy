@@ -61,7 +61,6 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     )
 
     nodecg.listenFor('resetBoard', () => {
-        logger.info(gameStateRep.value)
         if (!gameStateRep.value.currentRound) {
             logger.error('No current round set when trying to reset board!')
             return
@@ -85,12 +84,10 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
 
     nodecg.listenFor('clearQuestion', () => {
-        logger.info('clearQuestion', gameStateRep.value.currentRound)
         clearQuestion()
     })
 
     nodecg.listenFor('coverClicked', (data) => {
-        logger.info('coverClicked', data.boardName)
         advanceBoardState(data.boardName, data.row, data.col)
 
         gameStateRep.value = {
@@ -121,7 +118,6 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
             const player = playersRep.value.find((p) => p.id === playerId)
             if (!player) {
-                logger.info(player)
                 logger.error(
                     'Invalid player ID when attempting to give answer!',
                     playerId
@@ -177,16 +173,11 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
             logger.error('No current clue set when trying to clear question!')
             return
         }
-        logger.info('board state before advancing')
-        logger.info(boardStatesRep.value[gameStateRep.value.currentRound])
 
         const row = gameStateRep.value.currentClue.row
         const col = gameStateRep.value.currentClue.column
 
         advanceBoardState(gameStateRep.value.currentRound, row, col)
-
-        logger.info('board state after advancing')
-        logger.info(boardStatesRep.value[gameStateRep.value.currentRound])
 
         gameStateRep.value = {
             ...gameStateRep.value,
