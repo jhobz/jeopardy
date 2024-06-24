@@ -64,6 +64,7 @@ export const Board: React.FC<BoardProps> = ({
             return
         }
         const clone = squareElement?.cloneNode(true) as HTMLElement
+        clone.style.position = 'absolute';
         gridRef.current.appendChild(clone)
         const rect = squareElement.getBoundingClientRect()
         const gridRect = gridRef.current.getBoundingClientRect()
