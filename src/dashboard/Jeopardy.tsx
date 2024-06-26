@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useReplicant } from '@nodecg/react-hooks'
-import { GameData, GameState, Player } from '../types/schemas'
-import { BoardState } from '../types/board-types'
+import { GameState, Player } from '../types/schemas'
+import { Round } from '../types/board-types'
 import { JeopardyBoard } from '../graphics/JeopardyBoard'
 import styled from 'styled-components'
-
-type Round = 'single' | 'double' | 'final'
 
 export function Jeopardy() {
     const [gameStateRep] = useReplicant<GameState>('gameState')
@@ -21,11 +19,7 @@ export function Jeopardy() {
 
     return (
         <>
-            <JeopardyBoard
-                width={800}
-                height={600}
-                round={gameStateRep?.currentRound}
-            />
+            <JeopardyBoard width={800} height={600} />
             <br />
             <label htmlFor="roundSelector">Round:</label>
             <select

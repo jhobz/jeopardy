@@ -2,7 +2,7 @@ import type NodeCG from '@nodecg/types'
 import { GameDataParser } from './GameDataParser'
 import { JArchiveParser } from './JArchiveParser'
 import { GameData, GameState, Player } from '../types/schemas'
-import { BoardState } from '../types/board-types'
+import { BoardState, Round } from '../types/board-types'
 import { CSVParser } from './CSVParser'
 
 let logger: NodeCG.Logger
@@ -84,7 +84,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         ).fill(new Array<number>(6).fill(0))
     })
 
-    nodecg.listenFor('changeRound', (round: 'single' | 'double' | 'final') => {
+    nodecg.listenFor('changeRound', (round: Round) => {
         if (!round) {
             logger.error("Tried to change to round that doesn't exist")
             return

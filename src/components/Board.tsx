@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { GameData, GameState } from '../types/schemas'
 import { BoardSquare } from './BoardSquare'
 import { useListenFor, useReplicant } from '@nodecg/react-hooks'
-import { BoardState } from '../types/board-types'
+import { BoardState, Round } from '../types/board-types'
 
 const SquareGrid = styled.div<{ width: number; height: number }>`
     position: relative;
@@ -34,7 +34,7 @@ const SquareGroup = styled.div<{
 
 type BoardProps = {
     data: GameData
-    round?: 'single' | 'double' | 'final'
+    round?: Round
     width?: number
     height?: number
 }

@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Board } from '../components/Board'
 import { useReplicant } from '@nodecg/react-hooks'
-import { GameData } from '../types/schemas'
+import { GameData, GameState } from '../types/schemas'
+import { Round } from '../types/board-types'
 
 type JeopardyBoardProps = {
     width?: number
     height?: number
-    round?: 'single' | 'double' | 'final'
+    round?: Round
 }
 
 export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
@@ -15,10 +16,12 @@ export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
     round = 'single',
 }) => {
     const [gameDataRep] = useReplicant<GameData>('gameData')
+    const [gameStateRep] = useReplicant<GameState>('gameState')
     const [boardData, setBoardData] = useState<GameData>({
         categories: [],
         clues: [],
     })
+    const [currentRound, setCurrentRound] = useState<Round>(round)
 
     useEffect(() => {
         if (!gameDataRep) {
@@ -26,20 +29,32 @@ export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
         }
 
         const categories = gameDataRep?.categories.filter(
-            (c) => c.round === round
+            (c) => c.round === currentRound
         )
-        const clues = gameDataRep?.clues.filter((c) => c.round === round)
+        const clues = gameDataRep?.clues.filter((c) => c.round === currentRound)
 
         setBoardData({
             categories,
             clues,
         })
-    }, [gameDataRep, round])
+    }, [gameDataRep, currentRound])
+
+    useEffect(() => {
+        setCurrentRound(round)
+    }, [round])
+
+    useEffect(() => {
+        if (!gameStateRep?.currentRound) {
+            return
+        }
+
+        setCurrentRound(gameStateRep.currentRound)
+    }, [gameStateRep])
 
     return (
         <Board
             data={boardData}
-            round={round}
+            round={currentRound}
             width={width}
             height={height}
         ></Board>

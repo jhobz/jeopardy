@@ -3,6 +3,7 @@ import NodeCG from '@nodecg/types'
 import csv from 'csvtojson'
 import { GameData } from '../types/schemas'
 import { GameDataParser, getCategoriesFromClues } from './GameDataParser'
+import { Round } from '../types/board-types'
 
 // Everything is a string because it's imported from a CSV file
 type CSVClue = {
@@ -11,7 +12,7 @@ type CSVClue = {
     value: string
     question: string
     answer: string
-    round: 'single' | 'double' | 'final'
+    round: Round
     details: string
     row_index: string
     col_index: string

@@ -2,6 +2,7 @@ import dns from 'node:dns'
 import NodeCG from '@nodecg/types'
 import { GameData } from '../types/schemas'
 import { GameDataParser, getCategoriesFromClues } from './GameDataParser'
+import { Round } from '../types/board-types'
 
 type JArchiveClue = {
     category: string
@@ -33,7 +34,7 @@ export class JArchiveParser implements GameDataParser {
             })
             .map((clue) => {
                 // Transform round
-                let round: 'single' | 'double' | 'final'
+                let round: Round
                 switch (clue.round) {
                     case 'Jeopardy!':
                         round = 'single'
