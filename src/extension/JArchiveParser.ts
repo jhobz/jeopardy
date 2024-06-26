@@ -1,7 +1,7 @@
 import dns from 'node:dns'
 import NodeCG from '@nodecg/types'
 import { GameData } from '../types/schemas'
-import { GameDataParser } from './GameDataParser'
+import { GameDataParser, getCategoriesFromClues } from './GameDataParser'
 
 type JArchiveClue = {
     category: string
@@ -33,7 +33,7 @@ export class JArchiveParser implements GameDataParser {
             })
             .map((clue) => {
                 // Transform round
-                let round
+                let round: 'single' | 'double' | 'final'
                 switch (clue.round) {
                     case 'Jeopardy!':
                         round = 'single'
@@ -70,29 +70,7 @@ export class JArchiveParser implements GameDataParser {
                 }
             })
 
-        const categoryNames = [
-            ...new Set(singleGame.map((clue) => clue.category)),
-        ]
-
-        let singleRoundIndex = 0
-        let doubleRoundIndex = 0
-        const categories = categoryNames.map((category) => {
-            let index = 0
-            const round = singleGame.find(
-                (clue) => clue.category === category
-            )?.round
-            if (round === 'single') {
-                index = singleRoundIndex++
-            } else if (round === 'double') {
-                index = doubleRoundIndex++
-            }
-
-            return {
-                name: category,
-                round,
-                index: index,
-            }
-        })
+        const categories = getCategoriesFromClues(singleGame)
 
         return {
             categories: categories,
