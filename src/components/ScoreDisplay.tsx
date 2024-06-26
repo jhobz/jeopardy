@@ -17,7 +17,7 @@ const Score = styled.div<{ $red?: boolean }>`
     font-weight: 400;
     text-align: center;
     background-color: var(--tile-color);
-    color: ${(props) => (props.$red ? 'red' : 'white')};
+    color: ${(props) => (props.$red ? '#DE4444' : 'white')};
     text-shadow: calc(1em / 10) calc(1em / 10) calc(1em / 20) #000;
 `
 
