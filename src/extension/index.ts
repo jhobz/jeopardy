@@ -3,6 +3,7 @@ import { GameDataParser } from './GameDataParser'
 import { JArchiveParser } from './JArchiveParser'
 import { GameData, GameState, Player } from '../types/schemas'
 import { BoardState } from '../types/board-types'
+import { CSVParser } from './CSVParser'
 
 let logger: NodeCG.Logger
 let hasDoneInitialLoad = false
@@ -18,23 +19,35 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
     const gameDataFileRep =
         nodecg.Replicant<NodeCG.AssetFile[]>('assets:game-data')
-    let gameDataParser: GameDataParser
 
-    gameDataFileRep.on('change', async (fileRep) => {
-        if ((!fileRep || !fileRep.length) && !hasDoneInitialLoad) {
+    gameDataFileRep.on('change', async (files) => {
+        let gameDataParser: GameDataParser
+        if ((!files || !files.length) && !hasDoneInitialLoad) {
             hasDoneInitialLoad = true
             return
         }
 
-        if (!fileRep || !fileRep.length) {
+        if (!files || !files.length) {
             logger.warn('No Game Data File found in assets group.')
             return
         }
 
-        // TODO: Check for file type
-        gameDataParser = new JArchiveParser()
+        // We're recreating the parser every time the asset file changes,
+        // but honestly that's fine.
+        if (files[0].ext === '.csv') {
+            gameDataParser = new CSVParser()
+        } else if (files[0].ext === '.json') {
+            gameDataParser = new JArchiveParser()
+        } else {
+            // This shouldn't be possible since the asset restricts its file extensions,
+            // but better to be safe than sorry.
+            throw new Error(
+                'Tried to parse unrecognized GameData file extension: ' +
+                    files[0].ext
+            )
+        }
 
-        gameDataRep.value = await gameDataParser.parse(fileRep[0])
+        gameDataRep.value = await gameDataParser.parse(files[0])
     })
 
     const playersRep = nodecg.Replicant<Player[]>('players', {
