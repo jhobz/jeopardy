@@ -64,7 +64,7 @@ export const Board: React.FC<BoardProps> = ({
             return
         }
         const clone = squareElement?.cloneNode(true) as HTMLElement
-        clone.style.position = 'absolute';
+        clone.style.position = 'absolute'
         gridRef.current.appendChild(clone)
         const rect = squareElement.getBoundingClientRect()
         const gridRect = gridRef.current.getBoundingClientRect()
@@ -100,15 +100,7 @@ export const Board: React.FC<BoardProps> = ({
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map((category) => category.name)
 
-    // Sort by value and then category in order to get everything in the right* order
-    const clues = [...data.clues].sort(
-        (a, b) =>
-            a.value - b.value ||
-            //@ts-ignore
-            data.categories.find((cat) => cat.name === a.category)?.index -
-                //@ts-ignore
-                data.categories.find((cat) => cat.name === b.category)?.index
-    )
+    const clues = sortClues(data.clues, data.categories)
 
     const categorySquares = categories.map((category, index) => {
         return (
@@ -136,6 +128,40 @@ export const Board: React.FC<BoardProps> = ({
             {...categorySquares}
             {...clueSquares}
         </SquareGrid>
+    )
+}
+
+const sortClues = (
+    cluesArray: GameData['clues'],
+    categories: GameData['categories']
+) => {
+    // Don't mutate prop
+    const clues = [...cluesArray]
+
+    if (!clues.length) {
+        return []
+    }
+
+    // If we have row & col, use that to sort, otherwise approximate via values
+    if (clues[0].row !== undefined) {
+        return clues.sort((a, b) => {
+            // TS doesn't know that row & column are guaranteed by parser on all clues if on one clue
+            //@ts-ignore
+            return a.row * 6 + a.column - (b.row * 6 + b.column)
+        })
+    }
+
+    // Sort by value and then category in order to get everything in the right* order
+    // *daily doubles mess things up, so it's not actually guaranteed to be correct.
+    // TODO: Figure out how to fix daily doubles.
+    return clues.sort(
+        (a, b) =>
+            a.value - b.value ||
+            // TS doesn't know that the category is guaranteed to be found
+            //@ts-ignore
+            categories.find((cat) => cat.name === a.category)?.index -
+                //@ts-ignore
+                categories.find((cat) => cat.name === b.category)?.index
     )
 }
 

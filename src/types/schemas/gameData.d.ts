@@ -14,10 +14,6 @@ export interface GameData {
 		round: 'single' | 'double' | 'final';
 		index?: number;
 	}[];
-	/**
-	 * @minItems 0
-	 * @maxItems 61
-	 */
 	clues: {
 		/**
 		 * The answer to be given by a contestant
@@ -30,5 +26,8 @@ export interface GameData {
 		question: string;
 		round: 'single' | 'double' | 'final';
 		value: number;
+		details?: string;
+		row?: number;
+		column?: number;
 	}[];
 }

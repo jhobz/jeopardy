@@ -24,6 +24,7 @@
                 "name": "game-data",
                 "title": "Game Data File",
                 "allowedTypes": [
+                    "csv",
                     "json"
                 ]
             },
@@ -115,6 +116,7 @@
         "@nodecg/react-hooks": "^1.0.3",
         "@types/react": "*",
         "@types/react-dom": "*",
+        "csvtojson": "^2.0.10",
         "react": "*",
         "react-dom": "*",
         "styled-components": "^6.1.11",
