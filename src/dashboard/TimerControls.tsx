@@ -67,12 +67,12 @@ export const TimerControls = () => {
         }
     }, [answerStart, setAnswerStart])
 
-    const handleIdleSound = useCallback(() => {
-        nodecg.sendMessage('idleSound')
+    const handleTimeoutSound = useCallback(() => {
+        nodecg.sendMessage('timeoutSound')
     }, [])
 
-    const handleAnswerSound = useCallback(() => {
-        nodecg.sendMessage('answerSound')
+    const handleRoundOverSound = useCallback(() => {
+        nodecg.sendMessage('roundOverSound')
     }, [])
 
     useListenFor('startIdleTimer', () => {
@@ -125,9 +125,11 @@ export const TimerControls = () => {
             </ControlSection>
             <ControlSection>
                 <div>
-                    <button onClick={handleIdleSound}>Play Idle Sound</button>
-                    <button onClick={handleAnswerSound}>
-                        Play Answer Timeout Sound
+                    <button onClick={handleTimeoutSound}>
+                        Play Timeout Sound
+                    </button>
+                    <button onClick={handleRoundOverSound}>
+                        Play Round Over Sound
                     </button>
                 </div>
             </ControlSection>

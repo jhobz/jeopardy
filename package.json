@@ -99,10 +99,14 @@
         ],
         "soundCues": [
             {
-                "name": "idle-timeout"
+                "name": "timeout",
+                "defaultFile": "src/graphics/assets/sounds/timeout.mp3",
+                "assignable": false
             },
             {
-                "name": "answer-timeout"
+                "name": "round-over",
+                "defaultFile": "src/graphics/assets/sounds/roundover.mp3",
+                "assignable": false
             }
         ]
     },
