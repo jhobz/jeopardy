@@ -98,6 +98,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
     nodecg.listenFor('clearQuestion', () => {
         clearQuestion()
+        nodecg.sendMessage('clearIdleTimer');
     })
 
     nodecg.listenFor('coverClicked', (data) => {
@@ -111,6 +112,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
 
         nodecg.sendMessage('showQuestion', data)
+        nodecg.sendMessage('startIdleTimer');
     })
 
     nodecg.listenFor(

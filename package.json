@@ -83,11 +83,26 @@
                 "headerColor": "#525F78"
             },
             {
+                "name": "timer-controls",
+                "title": "Timer Controls",
+                "width": 2,
+                "file": "timerControls.html",
+                "headerColor": "#525F78"
+            },
+            {
                 "name": "final-jeopardy-controls",
                 "title": "Final Jeopardy",
                 "width": 3,
                 "file": "finalJeopardyControls.html",
                 "headerColor": "#525F78"
+            }
+        ],
+        "soundCues": [
+            {
+                "name": "idle-timeout"
+            },
+            {
+                "name": "answer-timeout"
             }
         ]
     },
