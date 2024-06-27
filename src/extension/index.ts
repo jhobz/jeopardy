@@ -98,7 +98,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
     nodecg.listenFor('clearQuestion', () => {
         clearQuestion()
-        nodecg.sendMessage('clearIdleTimer');
+        nodecg.sendMessage('clearIdleTimer')
     })
 
     nodecg.listenFor('coverClicked', (data) => {
@@ -112,7 +112,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
 
         nodecg.sendMessage('showQuestion', data)
-        nodecg.sendMessage('startIdleTimer');
+        nodecg.sendMessage('startIdleTimer')
     })
 
     nodecg.listenFor(
@@ -148,6 +148,12 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
                 (isCorrect ? 1 : -1) *
                 (gameStateRep.value.currentClue?.value || 0)
 
+            nodecg.sendMessage('clearAnswerTimer')
+
+            if (!isCorrect) {
+                nodecg.sendMessage('startIdleTimer')
+            }
+
             if (isCorrect) {
                 clearQuestion()
             }
@@ -164,12 +170,16 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         if (activeBuzzerRep.value === null) {
             activeBuzzerRep.value = index
         }
+
+        nodecg.sendMessage('clearIdleTimer')
+        nodecg.sendMessage('startAnswerTimer')
     })
 
     nodecg.listenFor('buzzerReset', () => {
         console.log('Buzzer reset')
 
         activeBuzzerRep.value = null
+        nodecg.sendMessage('startIdleTimer')
     })
 
     nodecg.listenFor('updatePlayer', (player) => {
@@ -193,6 +203,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         const col = gameStateRep.value.currentClue.column
 
         advanceBoardState(gameStateRep.value.currentRound, row, col)
+        nodecg.sendMessage('clearIdleTimer')
+        nodecg.sendMessage('clearAnswerTimer')
 
         gameStateRep.value = {
             ...gameStateRep.value,
