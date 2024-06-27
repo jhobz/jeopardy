@@ -21,6 +21,7 @@
             "type": "string",
             "enum": ["single", "double", "final"]
         },
+        "displayedCategoryIndex": { "type": "number" },
         "boardDisplayMode": {
             "type": "string",
             "enum": ["intro", "board", "question"]

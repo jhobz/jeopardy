@@ -29,8 +29,20 @@ const BoardSquareTitleElement = styled(BoardSquareElement)`
     margin-bottom: 0.5rem;
 `
 
+const BoardSquareTitleCoverElement = styled(BoardSquareElement)`
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: 0.4em;
+
+    // Override hidden behavior
+    display: flex;
+    opacity: ${({ hidden }) => (hidden ? 0 : 1)};
+    transition: opacity 0.5s;
+`
+
 type BoardSquareProps = {
-    type: 'category' | 'clue' | 'value'
+    type: 'category' | 'clue' | 'value' | 'logo'
     content: string
     hidden?: boolean
     onClick?: (e: React.MouseEvent) => void
@@ -52,6 +64,20 @@ export const BoardSquare = React.forwardRef<
                 >
                     {content}
                 </BoardSquareTitleElement>
+            )
+        case 'logo':
+            return (
+                <BoardSquareTitleCoverElement
+                    className={className + ' board-category-cover'}
+                    onClick={onClick}
+                    hidden={!!hidden}
+                    ref={ref}
+                >
+                    <img
+                        src="images/logo.png"
+                        style={{ height: '100%', objectFit: 'contain' }}
+                    ></img>
+                </BoardSquareTitleCoverElement>
             )
         case 'clue':
             return (

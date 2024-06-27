@@ -5,6 +5,9 @@ import { GameData, GameState, Player } from '../types/schemas'
 import { BoardState, Round } from '../types/board-types'
 import { CSVParser } from './CSVParser'
 
+const BOARD_STATE_ROWS = 6
+const BOARD_STATE_COLUMNS = 6
+
 let logger: NodeCG.Logger
 let hasDoneInitialLoad = false
 
@@ -66,12 +69,45 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         'boardStates',
         {
             defaultValue: {
-                single: new Array(5).fill(new Array<number>(6).fill(0)),
-                double: new Array(5).fill(new Array<number>(6).fill(0)),
-                final: new Array(1).fill(new Array<number>(1).fill(0)),
+                single: new Array(BOARD_STATE_ROWS).fill(
+                    new Array<number>(BOARD_STATE_COLUMNS).fill(0)
+                ),
+                double: new Array(BOARD_STATE_ROWS).fill(
+                    new Array<number>(BOARD_STATE_COLUMNS).fill(0)
+                ),
+                final: new Array(2).fill(new Array<number>(1).fill(0)),
             },
         }
     )
+
+    nodecg.listenFor('nextCategory', () => {
+        gameStateRep.value = {
+            ...gameStateRep.value,
+            displayedCategoryIndex:
+                (gameStateRep.value.displayedCategoryIndex ?? 0) + 1,
+        }
+    })
+
+    nodecg.listenFor('changeMode', (mode: 'intro' | 'board' | 'question') => {
+        if (!mode) {
+            logger.error("Tried to change to mode that doesn't exist")
+            return
+        }
+
+        const newValue = {
+            ...gameStateRep.value,
+            boardDisplayMode: mode,
+        }
+
+        if (
+            gameStateRep.value.boardDisplayMode !== 'intro' &&
+            mode === 'intro'
+        ) {
+            newValue.displayedCategoryIndex = 0
+        }
+
+        gameStateRep.value = newValue
+    })
 
     nodecg.listenFor('resetBoard', () => {
         if (!gameStateRep.value.currentRound) {
@@ -80,8 +116,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
 
         boardStatesRep.value[gameStateRep.value.currentRound] = new Array(
-            5
-        ).fill(new Array<number>(6).fill(0))
+            BOARD_STATE_ROWS
+        ).fill(new Array<number>(BOARD_STATE_COLUMNS).fill(0))
     })
 
     nodecg.listenFor('changeRound', (round: Round) => {
@@ -99,6 +135,10 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     nodecg.listenFor('clearQuestion', () => {
         clearQuestion()
         nodecg.sendMessage('clearIdleTimer')
+    })
+
+    nodecg.listenFor('titleCoverClicked', (data) => {
+        advanceBoardState(data.boardName, data.row, data.col)
     })
 
     nodecg.listenFor('coverClicked', (data) => {
@@ -217,7 +257,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     const advanceBoardState = (boardName: string, row: number, col: number) => {
         try {
             const boardCopy = deepCopy(boardStatesRep.value[boardName])
-            boardCopy[row][col] = boardCopy[row][col] + 1
+            boardCopy[row][col]++
 
             boardStatesRep.value = {
                 ...boardStatesRep.value,

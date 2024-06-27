@@ -19,5 +19,6 @@ export interface GameState {
 		[k: string]: unknown;
 	};
 	currentRound?: 'single' | 'double' | 'final';
+	displayedCategoryIndex?: number;
 	boardDisplayMode?: 'intro' | 'board' | 'question';
 }

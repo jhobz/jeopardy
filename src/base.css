@@ -18,10 +18,18 @@ body {
     font-family: monospace;
 }
 
+.intro-feature {
+    transform-origin: var(--origin);
+    transform: scaleX(var(--xfactor)) scaleY(var(--yfactor));
+    transition:
+        transform 1s ease-in-out,
+        transform-origin 1s ease-in-out;
+}
+
 p.featured {
     color: white;
     position: absolute;
-    transition: transform 1s linear;
+    transition: transform 0.8s linear;
     transform-origin: top left;
     z-index: 99;
 
