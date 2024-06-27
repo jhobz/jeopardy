@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Board } from '../components/Board'
-import { useReplicant } from '@nodecg/react-hooks'
+import { useListenFor, useReplicant } from '@nodecg/react-hooks'
 import { GameData, GameState } from '../types/schemas'
 import { Round } from '../types/board-types'
 
@@ -50,6 +50,15 @@ export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
 
         setCurrentRound(gameStateRep.currentRound)
     }, [gameStateRep])
+
+    // --- Sounds ---
+    useListenFor('timeoutSound', () => {
+        nodecg.playSound('timeout')
+    })
+
+    useListenFor('roundOverSound', () => {
+        nodecg.playSound('round-over')
+    })
 
     return (
         <Board
