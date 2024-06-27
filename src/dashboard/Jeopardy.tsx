@@ -7,43 +7,18 @@ import { JeopardyBoard } from '../graphics/JeopardyBoard'
 import styled from 'styled-components'
 
 export function Jeopardy() {
-    const [gameStateRep] = useReplicant<GameState>('gameState')
-
-    const resetGame = useCallback(() => {
-        nodecg.sendMessage('resetBoard')
-    }, [])
-
-    const changeRound = useCallback((round: Round) => {
-        nodecg.sendMessage('changeRound', round)
-    }, [])
-
     return (
         <>
-            <JeopardyBoard width={800} height={600} />
-            <br />
-            <label htmlFor="roundSelector">Round:</label>
-            <select
-                id="roundSelector"
-                onChange={(e) => {
-                    changeRound(e.target.selectedOptions[0].value as Round)
-                }}
-                value={gameStateRep?.currentRound}
+            <div
+                style={{ width: '800px', height: '600px', overflow: 'hidden' }}
             >
-                <option value="single">First round</option>
-                <option value="double">Second round</option>
-                <option disabled value="final">
-                    Final round
-                </option>
-            </select>
-            <button
-                onClick={(e) => {
-                    resetGame()
-                }}
-            >
-                Reset Game
-            </button>
+                <JeopardyBoard width={800} height={600} />
+            </div>
             <br />
-            <QuestionControls />
+            <FlexRow>
+                <QuestionControls />
+                <ModeControls />
+            </FlexRow>
         </>
     )
 }
@@ -107,10 +82,93 @@ const QuestionControlsFieldset = styled.fieldset`
     }
 `
 
+type DisplayMode = 'intro' | 'board' | 'question'
+
+const ModeControls = () => {
+    const [gameStateRep] = useReplicant<GameState>('gameState')
+
+    const changeMode = useCallback((mode: DisplayMode) => {
+        nodecg.sendMessage('changeMode', mode)
+    }, [])
+
+    const nextCategory = useCallback(() => {
+        nodecg.sendMessage('nextCategory')
+    }, [])
+
+    const changeRound = useCallback((round: Round) => {
+        nodecg.sendMessage('changeRound', round)
+    }, [])
+
+    const resetRound = useCallback(() => {
+        nodecg.sendMessage('resetBoard')
+    }, [])
+
+    return (
+        <div style={{ fontSize: '16px' }}>
+            <h2>Mode Controls</h2>
+            <fieldset style={{ padding: '0.5em' }}>
+                <label htmlFor="modeSelector">Mode</label>
+                <br />
+                <select
+                    id="modeSelector"
+                    onChange={(e) => {
+                        changeMode(
+                            e.target.selectedOptions[0].value as DisplayMode
+                        )
+                    }}
+                    value={gameStateRep?.boardDisplayMode}
+                >
+                    <option value="intro">Intro</option>
+                    <option value="board">Board</option>
+                </select>
+                <br />
+                <button
+                    disabled={
+                        gameStateRep?.boardDisplayMode !== 'intro' ||
+                        gameStateRep?.displayedCategoryIndex === undefined ||
+                        gameStateRep?.displayedCategoryIndex >= 5
+                    }
+                    onClick={(e) => {
+                        nextCategory()
+                    }}
+                >
+                    Move to next category
+                </button>
+                <br />
+                <br />
+                <button
+                    onClick={(e) => {
+                        resetRound()
+                    }}
+                >
+                    Reset Round
+                </button>
+                <br />
+                <label htmlFor="roundSelector">Round</label>
+                <br />
+                <select
+                    id="roundSelector"
+                    onChange={(e) => {
+                        changeRound(e.target.selectedOptions[0].value as Round)
+                    }}
+                    value={gameStateRep?.currentRound}
+                >
+                    <option value="single">First round</option>
+                    <option value="double">Second round</option>
+                    <option disabled value="final">
+                        Final round
+                    </option>
+                </select>
+            </fieldset>
+        </div>
+    )
+}
+
 const FlexRow = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 100%;
 `
 
 const root = createRoot(document.getElementById('root')!)

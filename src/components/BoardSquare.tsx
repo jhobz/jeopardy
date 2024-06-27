@@ -38,7 +38,7 @@ const BoardSquareTitleCoverElement = styled(BoardSquareElement)`
     // Override hidden behavior
     display: flex;
     opacity: ${({ hidden }) => (hidden ? 0 : 1)};
-    transition: opacity 1s;
+    transition: opacity 0.5s;
 `
 
 type BoardSquareProps = {

@@ -90,6 +90,36 @@ export const Board: React.FC<BoardProps> = ({
             return
         }
 
+        if (
+            gameStateRep.boardDisplayMode === 'intro' &&
+            gameStateRep.displayedCategoryIndex !== undefined
+        ) {
+            const titleElement = gridRef.current?.querySelector(
+                `.square-${gameStateRep.displayedCategoryIndex}-${0}`
+            )
+
+            if (!gridRef.current || !titleElement) {
+                return
+            }
+
+            const gridRect = gridRef.current.getBoundingClientRect()
+            const titleRect = titleElement.getBoundingClientRect()
+            const origin = (gameStateRep.displayedCategoryIndex / 5) * 100
+            const xFactor = (gridRect.width + 1) / titleRect.width
+            const yFactor = (gridRect.height + 1) / titleRect.height
+
+            gridRef.current.style.setProperty(
+                '--origin',
+                origin.toString() + '% top'
+            )
+            gridRef.current.style.setProperty('--xfactor', xFactor.toString())
+            gridRef.current.style.setProperty('--yfactor', yFactor.toString())
+            gridRef.current.classList.add('intro-feature')
+            return
+        }
+
+        gridRef.current?.classList.remove('intro-feature')
+
         if (gameStateRep.boardDisplayMode === 'board' && currentClueElement) {
             currentClueElement.remove()
             setCurrentClueElement(undefined)
@@ -182,7 +212,11 @@ const TitleGrouping: React.FC<TitleGroupingProps> = ({
     }, [category, col, boardName])
 
     return (
-        <SquareGroup $row={1} $column={index + 1}>
+        <SquareGroup
+            className={`square-${col}-${0}`}
+            $row={1}
+            $column={index + 1}
+        >
             <BoardSquare
                 content={''}
                 onClick={onCoverClick}

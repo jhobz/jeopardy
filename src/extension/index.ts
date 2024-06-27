@@ -80,6 +80,35 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         }
     )
 
+    nodecg.listenFor('nextCategory', () => {
+        gameStateRep.value = {
+            ...gameStateRep.value,
+            displayedCategoryIndex:
+                (gameStateRep.value.displayedCategoryIndex ?? 0) + 1,
+        }
+    })
+
+    nodecg.listenFor('changeMode', (mode: 'intro' | 'board' | 'question') => {
+        if (!mode) {
+            logger.error("Tried to change to mode that doesn't exist")
+            return
+        }
+
+        const newValue = {
+            ...gameStateRep.value,
+            boardDisplayMode: mode,
+        }
+
+        if (
+            gameStateRep.value.boardDisplayMode !== 'intro' &&
+            mode === 'intro'
+        ) {
+            newValue.displayedCategoryIndex = 0
+        }
+
+        gameStateRep.value = newValue
+    })
+
     nodecg.listenFor('resetBoard', () => {
         if (!gameStateRep.value.currentRound) {
             logger.error('No current round set when trying to reset board!')
