@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useReplicant } from '@nodecg/react-hooks'
 import { GameState, Player } from '../types/schemas'
@@ -86,6 +86,7 @@ type DisplayMode = 'intro' | 'board' | 'question'
 
 const ModeControls = () => {
     const [gameStateRep] = useReplicant<GameState>('gameState')
+    const [resetBlock, setResetBlock] = useState<boolean>(true)
 
     const changeMode = useCallback((mode: DisplayMode) => {
         nodecg.sendMessage('changeMode', mode)
@@ -136,14 +137,6 @@ const ModeControls = () => {
                 </button>
                 <br />
                 <br />
-                <button
-                    onClick={(e) => {
-                        resetRound()
-                    }}
-                >
-                    Reset Round
-                </button>
-                <br />
                 <label htmlFor="roundSelector">Round</label>
                 <br />
                 <select
@@ -159,6 +152,28 @@ const ModeControls = () => {
                         Final round
                     </option>
                 </select>
+                <br />
+                <FlexRow>
+                    <span>
+                        <label htmlFor="resetControl">🔒</label>
+                        <input
+                            id="resetControl"
+                            type="checkbox"
+                            checked={resetBlock}
+                            onChange={() => {
+                                setResetBlock(!resetBlock)
+                            }}
+                        />
+                    </span>
+                    <button
+                        disabled={resetBlock}
+                        onClick={(e) => {
+                            resetRound()
+                        }}
+                    >
+                        Reset Round
+                    </button>
+                </FlexRow>
             </fieldset>
         </div>
     )
