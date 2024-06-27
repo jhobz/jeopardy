@@ -102,17 +102,9 @@ export const Board: React.FC<BoardProps> = ({
 
     const clues = sortClues(data.clues, data.categories)
 
-    const categorySquares = categories.map((category, index) => {
-        return (
-            <SquareGroup $row={1} $column={index + 1}>
-                <BoardSquare
-                    content={category}
-                    type="category"
-                    key={category}
-                />
-            </SquareGroup>
-        )
-    })
+    const categorySquares = categories.map((category, index) => (
+        <TitleGrouping category={category} index={index} boardName={round} />
+    ))
 
     const clueSquares = clues.map((clue, index) => (
         <SquareGrouping
@@ -165,6 +157,48 @@ const sortClues = (
     )
 }
 
+interface TitleGroupingProps {
+    index: number
+    category: string
+    boardName: string
+}
+const TitleGrouping: React.FC<TitleGroupingProps> = ({
+    index,
+    category,
+    boardName,
+}) => {
+    const [boardStatesRep] =
+        useReplicant<Record<string, BoardState>>('boardStates')
+    const col = index % 6
+    const state = boardStatesRep?.[boardName]?.[0]?.[col] ?? 0
+
+    const onCoverClick = useCallback(() => {
+        nodecg.sendMessage('titleCoverClicked', {
+            category,
+            row: 0,
+            col,
+            boardName,
+        })
+    }, [category, col, boardName])
+
+    return (
+        <SquareGroup $row={1} $column={index + 1}>
+            <BoardSquare
+                content={''}
+                onClick={onCoverClick}
+                type="logo"
+                key={category + 'logo'}
+                hidden={state > 0}
+            />
+            <BoardSquare
+                content={category}
+                type="category"
+                key={category + 'category'}
+            />
+        </SquareGroup>
+    )
+}
+
 interface SquareGroupingProps {
     clue: GameData['clues'][0]
     index: number
@@ -177,34 +211,31 @@ const SquareGrouping: React.FC<SquareGroupingProps> = ({
 }) => {
     const [boardStatesRep] =
         useReplicant<Record<string, BoardState>>('boardStates')
-    const row = Math.floor(index / 6)
+    const row = Math.floor(index / 6) + 1
     const col = index % 6
     const state = boardStatesRep?.[boardName]?.[row]?.[col] ?? 0
 
-    const onCoverClick = useCallback(
-        (e: React.MouseEvent) => {
-            nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
-        },
-        [clue, row, col, boardName]
-    )
+    const onCoverClick = useCallback(() => {
+        nodecg.sendMessage('coverClicked', { clue, row, col, boardName })
+    }, [clue, row, col, boardName])
 
     return (
         <SquareGroup
-            $row={row + 2}
+            $row={row + 1}
             $column={col + 1}
             key={clue.category + clue.value}
         >
             <BoardSquare
                 content={clue.value.toString()}
                 type="value"
-                hidden={state > 0 ? true : false}
+                hidden={state > 0}
                 onClick={onCoverClick}
             ></BoardSquare>
             <BoardSquare
                 className={`square-${col}-${row}`}
                 content={clue.question}
                 type="clue"
-                hidden={state > 1 ? true : false}
+                hidden={state > 1}
             />
         </SquareGroup>
     )

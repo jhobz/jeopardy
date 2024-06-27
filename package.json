@@ -100,12 +100,12 @@
         "soundCues": [
             {
                 "name": "timeout",
-                "defaultFile": "src/graphics/assets/sounds/timeout.mp3",
+                "defaultFile": "src/assets/sounds/timeout.mp3",
                 "assignable": false
             },
             {
                 "name": "round-over",
-                "defaultFile": "src/graphics/assets/sounds/roundover.mp3",
+                "defaultFile": "src/assets/sounds/roundover.mp3",
                 "assignable": false
             }
         ]
@@ -121,6 +121,9 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "staticFiles": {
+        "staticPath": "src/assets"
     },
     "scripts": {
         "build": "node scripts/build.mjs --all",
@@ -154,6 +157,7 @@
         "eslint-plugin-react-hooks": "^4.6.2",
         "glob": "^10.2.7",
         "nodemon": "*",
+        "parcel-reporter-static-files-copy": "^1.5.3",
         "prettier": "^3.3.2",
         "trash-cli": "*",
         "typescript": "^5.1.3"
