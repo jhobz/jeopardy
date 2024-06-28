@@ -77,7 +77,10 @@ export const FinalJeopardyControls = () => {
 
     return (
         <Container>
-            <Button onClick={handleHideBid} style={{ alignSelf: 'flex-end' }}>
+            <Button
+                onClick={handleHideBid}
+                style={{ position: 'absolute', top: '1em', right: '1em' }}
+            >
                 ✖ Hide All
             </Button>
             <br />
@@ -95,20 +98,26 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    /* font-size: 1.5rem; */
-    /* width: 100%; */
+
+    & > h2 {
+        margin-bottom: 0.5em;
+    }
 `
 
 const PlayerName = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    /* font-size: 1.5rem; */
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75em;
 `
 
 const FinalJeopardyRowContainer = styled.div`
+    & > :not(:first-child) {
+        margin-left: 1rem;
+    }
+
     & label {
         margin-right: 0.5rem;
     }
