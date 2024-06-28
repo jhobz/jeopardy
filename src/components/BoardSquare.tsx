@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { HTMLProps } from 'react'
 import styled from 'styled-components'
 
 const BoardSquareElement = styled.p<{ hidden: boolean }>`
@@ -42,7 +42,7 @@ const BoardSquareTitleCoverElement = styled(BoardSquareElement)`
 `
 
 type BoardSquareProps = {
-    type: 'category' | 'clue' | 'value' | 'logo'
+    type: 'category' | 'clue' | 'value' | 'logo' | 'finalCategory'
     content: string
     hidden?: boolean
     onClick?: (e: React.MouseEvent) => void
@@ -51,9 +51,21 @@ type BoardSquareProps = {
 
 export const BoardSquare = React.forwardRef<
     HTMLParagraphElement,
-    BoardSquareProps
->(({ type, content, hidden, onClick, className }, ref) => {
+    BoardSquareProps & HTMLProps<HTMLParagraphElement>
+>(({ type, content, hidden, onClick, className, style }, ref) => {
     switch (type) {
+        case 'finalCategory':
+            return (
+                <BoardSquareTitleCoverElement
+                    style={style}
+                    className={className}
+                    onClick={onClick}
+                    hidden={!!hidden}
+                    ref={ref}
+                >
+                    {content}
+                </BoardSquareTitleCoverElement>
+            )
         case 'category':
             return (
                 <BoardSquareTitleElement
@@ -82,6 +94,7 @@ export const BoardSquare = React.forwardRef<
         case 'clue':
             return (
                 <BoardSquareElement
+                    style={style}
                     className={className}
                     onClick={onClick}
                     hidden={!!hidden}

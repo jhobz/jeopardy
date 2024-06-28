@@ -109,10 +109,6 @@ export const TimerControls = () => {
                     {(answerTime / 1000).toFixed(1)} s
                 </FixedNumber>
             </ActiveLabel>
-            {/* <ActiveLabel>
-        {activeBuzzer === null || activeBuzzer === undefined ? '-' : playersRep?.find(x => x.controller === activeBuzzer)?.name || 'No player set'}
-      </ActiveLabel>
-      <ActiveSublabel>{activeBuzzer === null || activeBuzzer === undefined ? '-' : `Controller ${activeBuzzer + 1}`}</ActiveSublabel> */}
             <ControlSection>
                 <div>
                     <button onClick={handleStartIdle}>
@@ -134,7 +130,7 @@ export const TimerControls = () => {
                 </div>
             </ControlSection>
             <ControlSection>
-                <b>Thresholds</b>
+                <h2>Warning Thresholds</h2>
                 <div>
                     <label htmlFor="idleThreshold">Idle (ms)</label>
                     <input
@@ -177,8 +173,8 @@ const ActiveLabel = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.4em;
 `
 
 const ControlSection = styled.div`
@@ -187,16 +183,14 @@ const ControlSection = styled.div`
     padding-top: 1rem;
     border-top: 1px solid #fff;
 
-    & > b {
-        font-size: 1.25rem;
-        margin-bottom: 0.5rem;
+    & > h2 {
+        margin-bottom: 0.5em;
     }
 
     & > div {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 1.5rem;
 
         & input {
             margin-left: 0.5rem;
