@@ -30,8 +30,12 @@ const FinalJeopardyRow: React.FC<FinalJeopardyRowProps> = ({ player }) => {
     }, [player, bid])
 
     const handleShowBid = useCallback(() => {
-        nodecg.sendMessage('showBid', { id: player.id, bid })
-    }, [bid, player.id])
+        nodecg.sendMessage('showBid', { player, bid })
+    }, [bid, player])
+
+    const handleShowTotal = useCallback(() => {
+        nodecg.sendMessage('showTotal', { player })
+    }, [player])
 
     return (
         <FinalJeopardyRowContainer>
@@ -39,9 +43,8 @@ const FinalJeopardyRow: React.FC<FinalJeopardyRowProps> = ({ player }) => {
                 <span>
                     {player.name} - {player.points || 0}
                 </span>
-                <ShowBidButton onClick={handleShowBid}>Show Bid</ShowBidButton>
             </PlayerName>
-            <div>
+            <ActionRow>
                 <label>bid</label>
                 <input
                     type="number"
@@ -51,10 +54,15 @@ const FinalJeopardyRow: React.FC<FinalJeopardyRowProps> = ({ player }) => {
                     }}
                     onBlur={handleUpdateBid}
                 />
-            </div>
+                <Button onClick={handleShowBid}>👁 Show Bid</Button>
+            </ActionRow>
             <ActionRow>
-                <button onClick={handleCorrectBid}>✅ Correct</button>
-                <button onClick={handleIncorrectBid}>❌ Incorrect</button>
+                <Button onClick={handleCorrectBid}>✅ Correct</Button>
+                <Button onClick={handleIncorrectBid}>❌ Incorrect</Button>
+            </ActionRow>
+            <br />
+            <ActionRow>
+                <Button onClick={handleShowTotal}>💲 Show Total</Button>
             </ActionRow>
         </FinalJeopardyRowContainer>
     )
@@ -63,8 +71,16 @@ const FinalJeopardyRow: React.FC<FinalJeopardyRowProps> = ({ player }) => {
 export const FinalJeopardyControls = () => {
     const [playersRep] = useReplicant<Player[]>('players')
 
+    const handleHideBid = useCallback(() => {
+        nodecg.sendMessage('hideBid')
+    }, [])
+
     return (
         <Container>
+            <Button onClick={handleHideBid} style={{ alignSelf: 'flex-end' }}>
+                ✖ Hide All
+            </Button>
+            <br />
             {playersRep?.map((player, index) => (
                 <FinalJeopardyRow key={index} player={player} />
             ))}
@@ -78,15 +94,16 @@ root.render(<FinalJeopardyControls />)
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    font-size: 1.5rem;
+    align-items: stretch;
+    /* font-size: 1.5rem; */
+    /* width: 100%; */
 `
 
 const PlayerName = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    font-size: 1.5rem;
+    /* font-size: 1.5rem; */
     font-weight: 700;
     margin-bottom: 1rem;
 `
@@ -96,20 +113,28 @@ const FinalJeopardyRowContainer = styled.div`
         margin-right: 0.5rem;
     }
 
+    & input {
+        width: 100px;
+    }
+
     & + & {
         padding-top: 1rem;
         border-top: 1px solid #fff;
         margin-top: 1rem;
+        margin-right: 0.5rem;
     }
 `
 
 const ActionRow = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 0.5rem;
     margin-top: 0.5rem;
 `
 
-const ShowBidButton = styled.button`
-    margin-left: auto;
+const Button = styled.button`
+    min-width: 100px;
+    padding: 0.2em 0.4em;
+    /* margin-left: auto; */
 `
