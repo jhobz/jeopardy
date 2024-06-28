@@ -5,7 +5,7 @@ import { GameData, Player } from '../types/schemas'
 import ScoreDisplay from '../components/ScoreDisplay'
 import styled from 'styled-components'
 
-export const FinalBids: React.FC = () => {
+export const FinalRoundOverlay: React.FC = () => {
     const [scoreToDisplay, setScoreToDisplay] = useState<number>(0)
     const [hidden, setHidden] = useState<boolean>(true)
     const [finalQuestion, setFinalQuestion] = useState<string | undefined>()
@@ -107,4 +107,4 @@ const FinalQuestionDisplay = styled.div`
 `
 
 const root = createRoot(document.getElementById('root')!)
-root.render(<FinalBids />)
+root.render(<FinalRoundOverlay />)
