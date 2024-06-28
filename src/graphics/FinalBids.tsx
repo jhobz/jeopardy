@@ -12,7 +12,7 @@ export const FinalBids: React.FC = () => {
     useListenFor<{ player: Player; bid: number }>(
         'showBid',
         ({ player, bid }) => {
-            if (!player || !bid) {
+            if (!player || bid === undefined) {
                 console.error(
                     'Tried to show bid but player or bid was not found!',
                     player,
