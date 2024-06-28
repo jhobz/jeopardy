@@ -148,9 +148,7 @@ const ModeControls = () => {
                 >
                     <option value="single">First round</option>
                     <option value="double">Second round</option>
-                    <option disabled value="final">
-                        Final round
-                    </option>
+                    <option value="final">Final round</option>
                 </select>
                 <br />
                 <FlexRow>

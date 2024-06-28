@@ -5,11 +5,16 @@ import { BoardSquare } from './BoardSquare'
 import { useListenFor, useReplicant } from '@nodecg/react-hooks'
 import { BoardState, Round } from '../types/board-types'
 
-const SquareGrid = styled.div<{ width: number; height: number }>`
+const SquareGrid = styled.div<{
+    width: number
+    height: number
+    $rows?: number
+    $cols?: number
+}>`
     position: relative;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(${({ $cols }) => $cols || 6}, minmax(0, 1fr));
+    grid-template-rows: repeat(${({ $rows }) => $rows || 6}, minmax(0, 1fr));
     row-gap: 0.5em;
     column-gap: 0.5em;
     justify-items: stretch;
@@ -136,16 +141,30 @@ export const Board: React.FC<BoardProps> = ({
         <TitleGrouping category={category} index={index} boardName={round} />
     ))
 
-    const clueSquares = clues.map((clue, index) => (
-        <SquareGrouping
-            key={index}
-            clue={clue}
-            index={index}
-            boardName={round}
-        />
-    ))
+    const clueSquares = clues.map((clue, index) =>
+        round === 'final' ? (
+            <FinalGrouping key={index} clue={clue} />
+        ) : (
+            <SquareGrouping
+                key={index}
+                clue={clue}
+                index={index}
+                boardName={round}
+            />
+        )
+    )
 
-    return (
+    return round === 'final' ? (
+        <SquareGrid
+            width={width}
+            height={height}
+            ref={gridRef}
+            $rows={1}
+            $cols={1}
+        >
+            {...clueSquares}
+        </SquareGrid>
+    ) : (
         <SquareGrid width={width} height={height} ref={gridRef}>
             {...categorySquares}
             {...clueSquares}
@@ -228,6 +247,45 @@ const TitleGrouping: React.FC<TitleGroupingProps> = ({
                 content={category}
                 type="category"
                 key={category + 'category'}
+            />
+        </SquareGroup>
+    )
+}
+
+interface FinalGroupingProps {
+    clue: GameData['clues'][0]
+}
+const FinalGrouping: React.FC<FinalGroupingProps> = ({ clue }) => {
+    const [boardStatesRep] =
+        useReplicant<Record<string, BoardState>>('boardStates')
+    const state = boardStatesRep?.['final']?.[0]?.[0] ?? 0
+
+    const onCoverClick = useCallback(() => {
+        nodecg.sendMessage('titleCoverClicked', {
+            category: clue.category,
+            row: 0,
+            col: 0,
+            boardName: 'final',
+        })
+        nodecg.sendMessage('playFinalSound')
+        nodecg.sendMessage('showFinalQuestion')
+    }, [clue.category])
+
+    return (
+        <SquareGroup className={`square-${0}-${0}`} $row={1} $column={1}>
+            <BoardSquare
+                style={{ fontSize: '7em', transition: 'none' }}
+                content={clue.category}
+                onClick={onCoverClick}
+                type="finalCategory"
+                key={'finalcategory'}
+                hidden={state > 0}
+            />
+            <BoardSquare
+                style={{ fontSize: '7em' }}
+                content={clue.question}
+                type="clue"
+                key={'finalclue'}
             />
         </SquareGroup>
     )
