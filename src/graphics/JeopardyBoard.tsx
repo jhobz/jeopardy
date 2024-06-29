@@ -3,17 +3,20 @@ import { Board } from '../components/Board'
 import { useListenFor, useReplicant } from '@nodecg/react-hooks'
 import { GameData, GameState } from '../types/schemas'
 import { Round } from '../types/board-types'
+import styled from 'styled-components'
 
 type JeopardyBoardProps = {
     width?: number
     height?: number
     round?: Round
+    hideFrame?: boolean
 }
 
 export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
-    width = 1920,
-    height = 1080,
+    width = 1442,
+    height = 846,
     round = 'single',
+    hideFrame = false,
 }) => {
     const [gameDataRep] = useReplicant<GameData>('gameData')
     const [gameStateRep] = useReplicant<GameState>('gameState')
@@ -61,11 +64,46 @@ export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
     })
 
     return (
-        <Board
-            data={boardData}
-            round={currentRound}
-            width={width}
-            height={height}
-        ></Board>
+        <>
+            {hideFrame ? (
+                <Board
+                    data={boardData}
+                    round={currentRound}
+                    width={width}
+                    height={height}
+                ></Board>
+            ) : (
+                <Frame>
+                    <Border>
+                        <Board
+                            data={boardData}
+                            round={currentRound}
+                            width={width}
+                            height={height}
+                        />
+                    </Border>
+                </Frame>
+            )}
+        </>
     )
 }
+
+const Frame = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 1672px;
+    height: 896px;
+    border: 1.5em solid black;
+    background: linear-gradient(180deg, #38214a 0%, #0f001b 100%);
+    margin: 45px auto auto;
+    overflow: hidden;
+`
+
+const Border = styled.div`
+    width: 1490px;
+    height: calc(896px - 3em);
+    border-left: 1.5em solid black;
+    border-right: 1.5em solid black;
+    overflow: hidden;
+`

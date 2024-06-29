@@ -12,7 +12,7 @@ export function Jeopardy() {
             <div
                 style={{ width: '800px', height: '600px', overflow: 'hidden' }}
             >
-                <JeopardyBoard width={800} height={600} />
+                <JeopardyBoard width={800} height={600} hideFrame />
             </div>
             <br />
             <FlexRow>
