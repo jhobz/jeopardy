@@ -160,6 +160,13 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         nodecg.sendMessage('startIdleTimer')
     })
 
+    nodecg.listenFor('showFinalQuestion', (clue) => {
+        gameStateRep.value = {
+            ...gameStateRep.value,
+            currentClue: { ...clue },
+        }
+    })
+
     nodecg.listenFor(
         'playerAnswer',
         ({
