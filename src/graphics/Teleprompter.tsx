@@ -64,9 +64,7 @@ export const Teleprompter: React.FC = () => {
                 <div>
                     <h2>Leaderboard</h2>
                     {[...(playersRep || [])]
-                        .sort(
-                            (a, b) => (b.points || -9999) - (a.points || -9999)
-                        )
+                        .sort((a, b) => (b.points || 0) - (a.points || 0))
                         .map((player) => {
                             return (
                                 <p>
