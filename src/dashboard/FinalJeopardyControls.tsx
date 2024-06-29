@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useReplicant } from '@nodecg/react-hooks'
 import { createRoot } from 'react-dom/client'
@@ -70,6 +70,26 @@ const FinalJeopardyRow: React.FC<FinalJeopardyRowProps> = ({ player }) => {
 
 export const FinalJeopardyControls = () => {
     const [playersRep] = useReplicant<Player[]>('players')
+    const [lockPlayers, setLockPlayers] = useState<boolean>(false)
+    const [finalPlayers, setFinalPlayers] = useState<Player[]>([])
+
+    useEffect(() => {
+        if (!playersRep) {
+            return
+        }
+
+        if (!lockPlayers) {
+            setFinalPlayers(
+                [...playersRep]
+                    .sort((a, b) => (a.points || 0) - (b.points || 0))
+                    .slice(-3)
+            )
+        }
+    }, [playersRep, lockPlayers])
+
+    const handleLockPlayers = useCallback(() => {
+        setLockPlayers(!lockPlayers)
+    }, [lockPlayers, setLockPlayers])
 
     const handleHideBid = useCallback(() => {
         nodecg.sendMessage('hideBid')
@@ -77,19 +97,23 @@ export const FinalJeopardyControls = () => {
 
     return (
         <Container>
-            <Button
-                onClick={handleHideBid}
+            <ActionRow
                 style={{ position: 'absolute', top: '1em', right: '1em' }}
             >
-                ✖ Hide All
-            </Button>
+                <Button onClick={handleLockPlayers}>
+                    {lockPlayers ? '🔓 Unlock' : '🔒 Lock'} Players
+                </Button>
+                <Button onClick={handleHideBid}>✖ Hide All</Button>
+            </ActionRow>
             <h2>Player Bids</h2>
-            {[...(playersRep || [])]
-                .sort((a, b) => (a.points || 0) - (b.points || 0))
-                .slice(-3)
-                .map((player, index) => (
-                    <FinalJeopardyRow key={player.id} player={player} />
-                ))}
+            {finalPlayers.map((player) => (
+                <FinalJeopardyRow
+                    key={player.id}
+                    player={
+                        playersRep?.find((p) => p.id === player.id) || player
+                    }
+                />
+            ))}
         </Container>
     )
 }
