@@ -35,6 +35,10 @@ const SquareGroup = styled.div<{
     grid-row: ${(props) => props.$row};
     grid-column: ${(props) => props.$column};
     background-color: var(--tile-color);
+
+    &.first-row {
+        margin-bottom: 1.5em;
+    }
 `
 
 type BoardProps = {
@@ -232,7 +236,7 @@ const TitleGrouping: React.FC<TitleGroupingProps> = ({
 
     return (
         <SquareGroup
-            className={`square-${col}-${0}`}
+            className={`square-${col}-${0} first-row`}
             $row={1}
             $column={index + 1}
         >
