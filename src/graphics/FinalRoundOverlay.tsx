@@ -69,8 +69,7 @@ export const FinalRoundOverlay: React.FC = () => {
                 <FinalQuestionDisplay>{finalQuestion}</FinalQuestionDisplay>
             ) : (
                 <Container $hidden={hidden}>
-                    {' '}
-                    <ScoreDisplay score={scoreToDisplay} />{' '}
+                    <ScoreDisplay score={scoreToDisplay} />
                 </Container>
             )}
         </>
@@ -87,6 +86,11 @@ const Container = styled.div<{ $hidden: boolean }>`
     border: var(--border-width) solid black;
     opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
     transition: opacity 0.25s linear;
+    max-width: 580px;
+
+    & > div {
+        font-size: clamp(1rem, 15vw, 4rem);
+    }
 `
 
 const FinalQuestionDisplay = styled.div`
@@ -94,7 +98,7 @@ const FinalQuestionDisplay = styled.div`
     font-family: var(--board-font);
     font-weight: 800;
     text-shadow: calc(1em / 10) calc(1em / 10) calc(1em / 20) #000;
-    padding: 2em 15%;
+    padding: 0.75em 15%;
     color: white;
     background: linear-gradient(
         to right,
