@@ -85,7 +85,7 @@ export const FinalJeopardyControls = () => {
             </Button>
             <h2>Player Bids</h2>
             {[...(playersRep || [])]
-                .sort((a, b) => (a.points || -9999) - (b.points || -9999))
+                .sort((a, b) => (a.points || 0) - (b.points || 0))
                 .slice(-3)
                 .map((player, index) => (
                     <FinalJeopardyRow key={player.id} player={player} />
