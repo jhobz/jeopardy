@@ -87,6 +87,7 @@ const Container = styled.div<{ $hidden: boolean }>`
     opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
     transition: opacity 0.25s linear;
     max-width: 580px;
+    margin: auto;
 
     & > div {
         font-size: clamp(1rem, 15vw, 4rem);
