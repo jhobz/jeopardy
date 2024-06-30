@@ -196,6 +196,21 @@ export function PlayerDashboard() {
         setPlayersRep(copy)
     }, [playersRep])
 
+    const [gameIdRep] = useReplicant<string>('gameId')
+    const [gameId, setGameId] = useState<string | undefined>(gameIdRep || '')
+
+    useEffect(() => {
+        if (!gameIdRep) {
+            return
+        }
+
+        setGameId(gameIdRep)
+    }, [gameIdRep])
+
+    const handleGameId = useCallback(() => {
+        nodecg.sendMessage('setGameId', gameId)
+    }, [gameId])
+
     return (
         <>
             <h2>Players</h2>
@@ -211,6 +226,20 @@ export function PlayerDashboard() {
             <button onClick={() => setPlayersRep([])}>Clear players</button>
             <br />
             <button onClick={() => resetPoints()}>Reset points</button>
+            <br />
+            <br />
+            <label htmlFor="gameIdInput" style={{ marginRight: '1em' }}>
+                JArchive Show Number (Rehearsals)
+            </label>
+            <input
+                value={gameId}
+                onChange={(e) => {
+                    setGameId(e.target.value)
+                }}
+                onBlur={handleGameId}
+                type="text"
+                id="gameIdInput"
+            />
         </>
     )
 }

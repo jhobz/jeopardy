@@ -18,7 +18,10 @@ export class JArchiveParser implements GameDataParser {
     private BASE_URI = 'http://localhost:9090'
     private GAME_ID = '5345'
 
-    constructor() {
+    constructor(gameId?: string) {
+        if (gameId) {
+            this.GAME_ID = gameId
+        }
         // Node resolves DNS with IPv6 first, so it will try to convert localhost to ::1. This is an alternative to replacing localhost with 127.0.0.1
         dns.setDefaultResultOrder('ipv4first')
     }

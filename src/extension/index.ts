@@ -9,6 +9,7 @@ const BOARD_STATE_ROWS = 6
 const BOARD_STATE_COLUMNS = 6
 
 let logger: NodeCG.Logger
+let gameDataParser: GameDataParser
 let hasDoneInitialLoad = false
 
 module.exports = function (nodecg: NodeCG.ServerAPI) {
@@ -22,9 +23,9 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
     })
     const gameDataFileRep =
         nodecg.Replicant<NodeCG.AssetFile[]>('assets:game-data')
+    const gameIdRep = nodecg.Replicant<string>('gameId')
 
     gameDataFileRep.on('change', async (files) => {
-        let gameDataParser: GameDataParser
         if ((!files || !files.length) && !hasDoneInitialLoad) {
             hasDoneInitialLoad = true
             return
@@ -40,7 +41,11 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         if (files[0].ext === '.csv') {
             gameDataParser = new CSVParser()
         } else if (files[0].ext === '.json') {
-            gameDataParser = new JArchiveParser()
+            if (gameIdRep.value) {
+                gameDataParser = new JArchiveParser(gameIdRep.value)
+            } else {
+                gameDataParser = new JArchiveParser()
+            }
         } else {
             // This shouldn't be possible since the asset restricts its file extensions,
             // but better to be safe than sorry.
@@ -235,6 +240,16 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
         playersRep.value = playersRep.value.map((x) =>
             x.id === player.id ? player : x
         )
+    })
+
+    nodecg.listenFor('setGameId', async (gameId) => {
+        gameIdRep.value = gameId
+
+        if (gameDataFileRep.value && gameDataFileRep.value.length > 0) {
+            gameDataRep.value = await gameDataParser.parse(
+                gameDataFileRep.value[0]
+            )
+        }
     })
 
     const clearQuestion = () => {
