@@ -15,17 +15,6 @@ export const Teleprompter: React.FC = () => {
         <FlexRow style={{ height: '100vh' }}>
             <FlexColumn>
                 <div>
-                    <h2>Buzzer</h2>
-                    <p>
-                        {activeBuzzerRep === null ||
-                        activeBuzzerRep === undefined
-                            ? '-'
-                            : playersRep?.find(
-                                  (x) => x.controller === activeBuzzerRep
-                              )?.name || 'No player set'}
-                    </p>
-                </div>
-                <div>
                     <h2>Current Clue</h2>
                     <p>
                         <span>
@@ -58,6 +47,19 @@ export const Teleprompter: React.FC = () => {
                             )?.details as string) ?? ''}
                         </span>
                     </p>
+                </div>
+                <div>
+                    <h2>Buzzer</h2>
+                    {activeBuzzerRep === null ||
+                    activeBuzzerRep === undefined ? (
+                        <p>-</p>
+                    ) : (
+                        <p style={{ color: 'red' }}>
+                            {playersRep?.find(
+                                (x) => x.controller === activeBuzzerRep
+                            )?.name || 'No player set'}
+                        </p>
+                    )}
                 </div>
             </FlexColumn>
             <div>
