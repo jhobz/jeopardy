@@ -272,7 +272,7 @@ const FinalGrouping: React.FC<FinalGroupingProps> = ({ clue }) => {
             boardName: 'final',
         })
         nodecg.sendMessage('playFinalSound')
-        nodecg.sendMessage('showFinalQuestion', clue)
+        nodecg.sendMessage('showFinalQuestion', { clue, row: 0, col: 0 })
     }, [clue.category])
 
     return (
