@@ -38,6 +38,9 @@ const SquareGroup = styled.div<{
 
     &.first-row {
         margin-bottom: 1.5em;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        backface-visibility: hidden;
     }
 `
 
@@ -332,6 +335,7 @@ const SquareGrouping: React.FC<SquareGroupingProps> = ({
                 content={clue.question}
                 type="clue"
                 hidden={state > 1}
+                style={{ fontSize: '0.85em' }}
             />
         </SquareGroup>
     )
