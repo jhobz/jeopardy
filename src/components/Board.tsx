@@ -281,7 +281,11 @@ const FinalGrouping: React.FC<FinalGroupingProps> = ({ clue }) => {
     return (
         <SquareGroup className={`square-${0}-${0}`} $row={1} $column={1}>
             <BoardSquare
-                style={{ fontSize: '7em', transition: 'none' }}
+                style={{
+                    fontSize: '7em',
+                    transition: 'none',
+                    textTransform: 'uppercase',
+                }}
                 content={clue.category}
                 onClick={onCoverClick}
                 type="finalCategory"
@@ -289,7 +293,7 @@ const FinalGrouping: React.FC<FinalGroupingProps> = ({ clue }) => {
                 hidden={state > 0}
             />
             <BoardSquare
-                style={{ fontSize: '7em' }}
+                style={{ fontSize: '5.6em' }}
                 content={clue.question}
                 type="clue"
                 key={'finalclue'}
