@@ -57,10 +57,22 @@ export const JeopardyBoard: React.FC<JeopardyBoardProps> = ({
     // --- Sounds ---
     useListenFor('timeoutSound', () => {
         nodecg.playSound('timeout')
+        setTimeout(() => {
+            nodecg.playSound('timeout')
+        }, 150)
+        setTimeout(() => {
+            nodecg.playSound('timeout')
+        }, 300)
     })
 
     useListenFor('roundOverSound', () => {
         nodecg.playSound('round-over')
+        setTimeout(() => {
+            nodecg.playSound('round-over')
+        }, 400)
+        setTimeout(() => {
+            nodecg.playSound('round-over')
+        }, 800)
     })
 
     return (
